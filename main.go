@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/exec"
+	"strings"
 )
 
 type ChannelRoot struct {
@@ -35,13 +38,37 @@ type Playlist struct {
 }
 
 func main() {
-	c, err := getChannels()
+	channels, err := getChannels()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Print(c)
+	playlistsArg := buildPlaylistsArg(channels)
+	shell := os.Getenv("SHELL")
+	mpv := fmt.Sprintf("mpv --idle --input-ipc-server=%s --playlist=%s --volume 30 &", "/tmp/somafm", playlistsArg)
+
+	cmd := exec.Command(shell, "-c", mpv)
+
+	err = cmd.Run()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("mpv successfully started")
+}
+
+func buildPlaylistsArg(channels []Channel) string {
+	var playlists []string
+
+	for _, channel := range channels {
+		for _, playlist := range channel.Playlists {
+			playlists = append(playlists, playlist.URL)
+		}
+	}
+
+	return strings.Join(playlists, " ")
 }
 
 func getChannels() ([]Channel, error) {
