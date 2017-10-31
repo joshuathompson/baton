@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/gizak/termui"
 )
 
 type ChannelRoot struct {
@@ -57,6 +59,37 @@ func main() {
 	}
 
 	fmt.Println("mpv successfully started")
+
+	err = termui.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer termui.Close()
+
+	p := termui.NewPar(":PRESS q TO QUIT DEMO")
+	p.Height = 3
+	p.Width = 50
+	p.TextFgColor = termui.ColorWhite
+	p.BorderLabel = "Text Box"
+	p.BorderFg = termui.ColorCyan
+
+	g := termui.NewGauge()
+	g.Percent = 50
+	g.Width = 50
+	g.Height = 3
+	g.Y = 11
+	g.BorderLabel = "Gauge"
+	g.BarColor = termui.ColorRed
+	g.BorderFg = termui.ColorWhite
+	g.BorderLabelFg = termui.ColorCyan
+
+	termui.Render(p, g) // feel free to call Render, it's async and non-block
+
+	termui.Handle("/sys/kbd/q", func(termui.Event) {
+		termui.StopLoop()
+	})
+
+	termui.Loop()
 }
 
 func buildPlaylistsArg(channels []Channel) string {
