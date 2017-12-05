@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"github.com/joshuathompson/baton/cmd"
 )
 
 func main() {
-	fmt.Printf("Hello!\n")
+	cmd.Execute()
 }
