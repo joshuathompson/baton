@@ -3,31 +3,28 @@ package cmd
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 
+	"github.com/joshuathompson/baton/spotify"
 	"github.com/spf13/cobra"
 )
 
-const (
-	scheme  = "https"
-	baseURL = "accounts.spotify.com/"
-)
-
-type tokens struct {
-	AccessToken  string `json:"access_token"`
-	TokenType    string `json:"token_type"`
-	ExpiresIn    int    `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	Scope        string `json:"scope"`
-}
-
 func getClientCredentials() (id, secret string) {
 	scanner := bufio.NewScanner(os.Stdin)
+
+	fmt.Println("\nFollow these instructions to authenticate the Baton CLI to change your songs, volume, etc:\n" +
+		"1. Go to https://beta.developer.spotify.com/dashboard\n" +
+		"2. Log in with your Spotify username/password\n" +
+		"3. Create a new app\n" +
+		"4. Click the newly created app\n" +
+		"5. Click 'Edit Settings'\n" +
+		"6. Add 'http://localhost:15298/callback' as a redirect URI, don't forget to save\n" +
+		"7. Copy the Client Id and Client Secret\n" +
+		"8. Input the items as the CLI asks for them\n")
 
 	fmt.Print("Enter Client Id: ")
 	scanner.Scan()
@@ -40,92 +37,81 @@ func getClientCredentials() (id, secret string) {
 	return id, secret
 }
 
-func printSpotifyAuthorizationURL(id string) {
+func getAuthorizationURL(id string) string {
 	v := url.Values{}
 	v.Set("client_id", id)
 	v.Set("response_type", "code")
-	v.Set("redirect_uri", "http://localhost:8080/callback")
+	v.Set("redirect_uri", "http://localhost:15298/callback")
 
-	u := &url.URL{
-		Scheme:   scheme,
-		Path:     baseURL + "authorize",
-		RawQuery: v.Encode(),
-	}
-
-	fmt.Println(u.String())
+	r := spotify.BuildRequest("GET", "authorize", v)
+	return r.URL.String()
 }
 
-func getCode() (c string) {
-	srv := &http.Server{Addr: ":8080"}
+func serverManager(srv *http.Server, keepAlive chan bool) {
+	for {
+		select {
+		case <-keepAlive:
+			ctx := context.Background()
+
+			if err := srv.Shutdown(ctx); err != nil {
+				log.Fatal(err)
+			}
+
+			return
+		default:
+		}
+	}
+}
+
+func getCode(id string) (c string) {
+	m := getAuthorizationURL(id)
+	fmt.Printf("\nNavigate to the following URL to Authorize Baton:\n%s\n", m)
+	keepAlive := make(chan bool)
+
+	srv := &http.Server{Addr: ":15298"}
 
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
-		c = r.URL.Query().Get("code")
-
-		ctx := context.Background()
-
-		if err := srv.Shutdown(ctx); err != nil {
-			panic(err)
-		}
+		code := r.URL.Query().Get("code")
+		keepAlive <- true
+		fmt.Fprintf(w, "<h1>Almost done!</h1><p>Baton has been approved, just copy the following code back to the CLI: <span style=\"color: #FF0000\">%s</span></p>", code)
 	})
 
+	go serverManager(srv, keepAlive)
 	srv.ListenAndServe()
+
+	fmt.Print("\nEnter Code: ")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	c = scanner.Text()
 
 	return c
 }
 
-func getTokens(id, secret, code string) (tokens, error) {
+func getTokens(id, secret, code string) (t spotify.Tokens) {
 	v := url.Values{}
 	v.Set("grant_type", "authorization_code")
 	v.Set("code", code)
-	v.Set("redirect_uri", "http://localhost:8080/callback")
+	v.Set("redirect_uri", "http://localhost:15298/callback")
 
-	u := &url.URL{
-		Scheme:   scheme,
-		Path:     baseURL + "api/token",
-		RawQuery: v.Encode(),
-	}
-
-	r, err := http.NewRequest("POST", u.String(), nil)
+	r := spotify.BuildRequest("POST", "api/token", v)
 	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r.SetBasicAuth(id, secret)
 
-	fmt.Println(r.URL.String())
+	err := spotify.MakeRequest(r, &t)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	client := &http.Client{}
-	res, err := client.Do(r)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer res.Body.Close()
-
-	if res.StatusCode != http.StatusOK {
-		log.Fatal(res.StatusCode)
-	}
-
-	t := tokens{}
-
-	err = json.NewDecoder(res.Body).Decode(&t)
-
-	return t, err
+	return t
 }
 
 func run(cmd *cobra.Command, args []string) {
 	id, secret := getClientCredentials()
-	printSpotifyAuthorizationURL(id)
-	code := getCode()
-	data, err := getTokens(id, secret, code)
+	code := getCode(id)
+	tokens := getTokens(id, secret, code)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("%+v\n", data)
+	fmt.Println("\nAuthentication successful!")
 }
 
 func init() {
@@ -134,7 +120,7 @@ func init() {
 
 var versionCmd = &cobra.Command{
 	Use:   "auth",
-	Short: "Print the version number of Hugo",
-	Long:  `All software has versions. This is Hugo's`,
+	Short: "Authorize Baton to access API on your behalf",
+	Long:  `Authorize Baton to access the Spotify API on your behalf by obtaining a long-lasting refresh token using your client_id, client_secret, and approval`,
 	Run:   run,
 }
