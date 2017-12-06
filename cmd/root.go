@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -27,38 +29,34 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.test.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/baton.json)")
 }
 
-// initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
-		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
 		home, err := homedir.Dir()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".test" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".test")
+		viper.AddConfigPath(home + "/.config")
+		viper.SetConfigName("baton")
+		cfgFile = home + "/.config/baton.json"
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
+		err := ioutil.WriteFile(cfgFile, []byte("{}"), 0666)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	err := viper.ReadInConfig()
+
+	if err != nil {
+		log.Fatal(err)
 	}
 }

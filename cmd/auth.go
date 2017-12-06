@@ -3,11 +3,16 @@ package cmd
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"time"
+
+	"github.com/spf13/viper"
 
 	"github.com/joshuathompson/baton/spotify"
 	"github.com/spf13/cobra"
@@ -42,6 +47,7 @@ func getAuthorizationURL(id string) string {
 	v.Set("client_id", id)
 	v.Set("response_type", "code")
 	v.Set("redirect_uri", "http://localhost:15298/callback")
+	v.Set("scopes", "playlist-read-private user-top-read user-library-read user-read-currently-playing user-read-recently-played user-modify-playback-state user-read-playback-state user-follow-read playlist-read-collaborative")
 
 	r := spotify.BuildRequest("GET", "authorize", v)
 	return r.URL.String()
@@ -106,21 +112,35 @@ func getTokens(id, secret, code string) (t spotify.Tokens) {
 	return t
 }
 
-func run(cmd *cobra.Command, args []string) {
+func authenticate(cmd *cobra.Command, args []string) {
+	fmt.Println(viper.ConfigFileUsed())
 	id, secret := getClientCredentials()
 	code := getCode(id)
 	tokens := getTokens(id, secret, code)
+
+	tokens.ExpiresDate = time.Now().Add((tokens.ExpiresIn - 30) * time.Second)
+
+	ts, err := json.Marshal(tokens)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ioutil.WriteFile(viper.ConfigFileUsed(), ts, 0666)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println("\nAuthentication successful!")
 }
 
 func init() {
-	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(authCmd)
 }
 
-var versionCmd = &cobra.Command{
+var authCmd = &cobra.Command{
 	Use:   "auth",
 	Short: "Authorize Baton to access API on your behalf",
 	Long:  `Authorize Baton to access the Spotify API on your behalf by obtaining a long-lasting refresh token using your client_id, client_secret, and approval`,
-	Run:   run,
+	Run:   authenticate,
 }
