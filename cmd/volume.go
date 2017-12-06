@@ -9,7 +9,6 @@ import (
 )
 
 func changeVolume(cmd *cobra.Command, args []string) {
-	fmt.Println(args[0])
 	err := api.SetVolume(args[0])
 
 	if err != nil {

@@ -8,6 +8,10 @@ import (
 	"net/url"
 )
 
+const (
+	apiURLBase = "api.spotify.com/v1/"
+)
+
 var client *http.Client
 
 func init() {
@@ -43,11 +47,13 @@ func makeRequest(r *http.Request, d interface{}) error {
 
 	defer res.Body.Close()
 
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
 		return errors.New(res.Status)
 	}
 
-	err = json.NewDecoder(res.Body).Decode(d)
+	if d != nil {
+		return json.NewDecoder(res.Body).Decode(d)
+	}
 
-	return err
+	return nil
 }

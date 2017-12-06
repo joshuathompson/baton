@@ -10,6 +10,21 @@ import (
 	"github.com/spf13/viper"
 )
 
+type tokens struct {
+	AccessToken    string        `json:"access_token"`
+	TokenType      string        `json:"token_type"`
+	ExpiresIn      time.Duration `json:"expires_in"`
+	ExpirationDate time.Time     `json:"expiration_date"`
+	ClientID       string        `json:"client_id"`
+	ClientSecret   string        `json:"client_secret"`
+	RefreshToken   string        `json:"refresh_token"`
+	Scope          string        `json:"scope"`
+}
+
+const (
+	accountsURLBase = "accounts.spotify.com/"
+)
+
 func GetAuthorizationURL(id string) string {
 	v := url.Values{}
 	v.Set("client_id", id)
@@ -17,7 +32,7 @@ func GetAuthorizationURL(id string) string {
 	v.Set("redirect_uri", "http://localhost:15298/callback")
 	v.Set("scope", "playlist-read-private user-top-read user-library-read user-read-currently-playing user-read-recently-played user-modify-playback-state user-read-playback-state user-follow-read playlist-read-collaborative")
 
-	r := buildRequest("GET", accountsBase+"authorize", v)
+	r := buildRequest("GET", accountsURLBase+"authorize", v)
 	return r.URL.String()
 }
 
@@ -28,7 +43,7 @@ func AuthorizeWithCode(id, secret, code string) {
 	v.Set("code", code)
 	v.Set("redirect_uri", "http://localhost:15298/callback")
 
-	r := buildRequest("POST", accountsBase+"api/token", v)
+	r := buildRequest("POST", accountsURLBase+"api/token", v)
 	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r.SetBasicAuth(id, secret)
 
@@ -58,7 +73,7 @@ func getAccessToken() string {
 		v.Set("grant_type", "refresh_token")
 		v.Set("refresh_token", rt)
 
-		r := buildRequest("POST", accountsBase+"api/token", v)
+		r := buildRequest("POST", accountsURLBase+"api/token", v)
 		r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 		r.SetBasicAuth(id, secret)
 
