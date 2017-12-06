@@ -1,4 +1,4 @@
-package spotify
+package api
 
 import (
 	"encoding/json"
@@ -10,23 +10,18 @@ import (
 
 var client *http.Client
 
-const (
-	scheme  = "https"
-	baseURL = "accounts.spotify.com/"
-)
-
 func init() {
 	client = &http.Client{}
 }
 
-func BuildRequest(method, endpoint string, query url.Values) *http.Request {
+func buildRequest(method, path string, query url.Values) *http.Request {
 	if query == nil {
 		query = url.Values{}
 	}
 
 	u := &url.URL{
-		Scheme:   scheme,
-		Path:     baseURL + endpoint,
+		Scheme:   "https",
+		Path:     path,
 		RawQuery: query.Encode(),
 	}
 
@@ -39,13 +34,7 @@ func BuildRequest(method, endpoint string, query url.Values) *http.Request {
 	return r
 }
 
-func AddHeaders(r *http.Request, headers map[string]string) {
-	for k, v := range headers {
-		r.Header.Add(k, v)
-	}
-}
-
-func MakeRequest(r *http.Request, d interface{}) error {
+func makeRequest(r *http.Request, d interface{}) error {
 	res, err := client.Do(r)
 
 	if err != nil {

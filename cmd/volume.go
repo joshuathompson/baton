@@ -2,14 +2,21 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/joshuathompson/baton/api"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 func changeVolume(cmd *cobra.Command, args []string) {
-	key := viper.Get("access_token")
-	fmt.Printf("%+v", key)
+	fmt.Println(args[0])
+	err := api.SetVolume(args[0])
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Volume changed to %s\n", args[0])
 }
 
 func init() {

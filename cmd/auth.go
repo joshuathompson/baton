@@ -3,18 +3,12 @@ package cmd
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
-	"time"
 
-	"github.com/spf13/viper"
-
-	"github.com/joshuathompson/baton/spotify"
+	"github.com/joshuathompson/baton/api"
 	"github.com/spf13/cobra"
 )
 
@@ -42,17 +36,6 @@ func getClientCredentials() (id, secret string) {
 	return id, secret
 }
 
-func getAuthorizationURL(id string) string {
-	v := url.Values{}
-	v.Set("client_id", id)
-	v.Set("response_type", "code")
-	v.Set("redirect_uri", "http://localhost:15298/callback")
-	v.Set("scopes", "playlist-read-private user-top-read user-library-read user-read-currently-playing user-read-recently-played user-modify-playback-state user-read-playback-state user-follow-read playlist-read-collaborative")
-
-	r := spotify.BuildRequest("GET", "authorize", v)
-	return r.URL.String()
-}
-
 func serverManager(srv *http.Server, keepAlive chan bool) {
 	for {
 		select {
@@ -70,7 +53,7 @@ func serverManager(srv *http.Server, keepAlive chan bool) {
 }
 
 func getCode(id string) (c string) {
-	m := getAuthorizationURL(id)
+	m := api.GetAuthorizationURL(id)
 	fmt.Printf("\nNavigate to the following URL to Authorize Baton:\n%s\n", m)
 	keepAlive := make(chan bool)
 
@@ -93,44 +76,10 @@ func getCode(id string) (c string) {
 	return c
 }
 
-func getTokens(id, secret, code string) (t spotify.Tokens) {
-	v := url.Values{}
-	v.Set("grant_type", "authorization_code")
-	v.Set("code", code)
-	v.Set("redirect_uri", "http://localhost:15298/callback")
-
-	r := spotify.BuildRequest("POST", "api/token", v)
-	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	r.SetBasicAuth(id, secret)
-
-	err := spotify.MakeRequest(r, &t)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return t
-}
-
 func authenticate(cmd *cobra.Command, args []string) {
-	fmt.Println(viper.ConfigFileUsed())
 	id, secret := getClientCredentials()
 	code := getCode(id)
-	tokens := getTokens(id, secret, code)
-
-	tokens.ExpiresDate = time.Now().Add((tokens.ExpiresIn - 30) * time.Second)
-
-	ts, err := json.Marshal(tokens)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = ioutil.WriteFile(viper.ConfigFileUsed(), ts, 0666)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	api.AuthorizeWithCode(id, secret, code)
 	fmt.Println("\nAuthentication successful!")
 }
 
