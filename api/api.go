@@ -47,7 +47,10 @@ func makeRequest(r *http.Request, d interface{}) error {
 
 	defer res.Body.Close()
 
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
+	if res.StatusCode != http.StatusOK &&
+		res.StatusCode != http.StatusCreated &&
+		res.StatusCode != http.StatusAccepted &&
+		res.StatusCode != http.StatusNoContent {
 		return errors.New(res.Status)
 	}
 

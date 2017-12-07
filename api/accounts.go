@@ -10,17 +10,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type tokens struct {
-	AccessToken    string        `json:"access_token"`
-	TokenType      string        `json:"token_type"`
-	ExpiresIn      time.Duration `json:"expires_in"`
-	ExpirationDate time.Time     `json:"expiration_date"`
-	ClientID       string        `json:"client_id"`
-	ClientSecret   string        `json:"client_secret"`
-	RefreshToken   string        `json:"refresh_token"`
-	Scope          string        `json:"scope"`
-}
-
 const (
 	accountsURLBase = "accounts.spotify.com/"
 )
@@ -67,6 +56,10 @@ func getAccessToken() string {
 	id := viper.GetString("client_id")
 	secret := viper.GetString("client_secret")
 	expiration := viper.GetTime("expiration_date")
+
+	if rt == "" {
+		log.Fatal("No valid token found, please run `baton auth` to properly")
+	}
 
 	if expiration.Before(time.Now()) {
 		v := url.Values{}
