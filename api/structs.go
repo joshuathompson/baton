@@ -70,7 +70,7 @@ type albumSimple struct {
 
 type artist struct {
 	ExternalUrls map[string]string `json:"external_urls"`
-	Followers    followers         `json:"followers"`
+	Followers    *followers        `json:"followers"`
 	Genres       []string          `json:"genres"`
 	Href         string            `json:"href"`
 	ID           string            `json:"id"`
@@ -99,7 +99,7 @@ type trackLink struct {
 }
 
 type track struct {
-	Album            albumSimple       `json:"album"`
+	Album            *albumSimple      `json:"album"`
 	Artists          []artistSimple    `json:"artists"`
 	AvailableMarkets []string          `json:"available_markets"`
 	DiscNumber       int               `json:"disc_number"`
@@ -110,7 +110,7 @@ type track struct {
 	Href             string            `json:"href"`
 	ID               string            `json:"id"`
 	IsPlayable       bool              `json:"is_playable"`
-	LinkedFrom       trackLink         `json:"linked_from"`
+	LinkedFrom       *trackLink        `json:"linked_from"`
 	Name             string            `json:"name"`
 	Popularity       int               `json:"popularity"`
 	PreviewURL       string            `json:"preview_url"`
@@ -129,7 +129,7 @@ type trackSimple struct {
 	Href             string            `json:"href"`
 	ID               string            `json:"id"`
 	IsPlayable       bool              `json:"is_playable"`
-	LinkedFrom       trackLink         `json:"linked_from"`
+	LinkedFrom       *trackLink        `json:"linked_from"`
 	Name             string            `json:"name"`
 	PreviewURL       string            `json:"preview_url"`
 	TrackNumber      int               `json:"track_number"`
@@ -142,14 +142,14 @@ type tracksInCursor struct {
 	Items   []trackSimple `json:"items"`
 	Limit   int           `json:"limit"`
 	Next    string        `json:"next"`
-	Cursors cursor        `json:"cursors"`
+	Cursors *cursor       `json:"cursors"`
 	Total   int           `json:"total"`
 }
 
 type playHistory struct {
-	Track    trackSimple `json:"track"`
-	PlayedAt time.Time   `json:"played_at"`
-	Context  context     `json:"context"`
+	Track    *trackSimple `json:"track"`
+	PlayedAt time.Time    `json:"played_at"`
+	Context  *context     `json:"context"`
 }
 
 type recentlyPlayedTracks struct {
@@ -157,7 +157,7 @@ type recentlyPlayedTracks struct {
 	Items   []playHistory `json:"items"`
 	Limit   int           `json:"limit"`
 	Next    string        `json:"next"`
-	Cursors cursor        `json:"cursors"`
+	Cursors *cursor       `json:"cursors"`
 	Total   int           `json:"total"`
 }
 
@@ -182,20 +182,20 @@ type context struct {
 }
 
 type currentlyPlayingContext struct {
-	Device       device  `json:"device"`
-	RepeatState  string  `json:"repeat_state"`
-	ShuffleState bool    `json:"shuffle_state"`
-	Context      context `json:"context"`
-	Timestamp    int     `json:"timestamp"`
-	ProgressMs   int     `json:"progress_ms"`
-	IsPlaying    bool    `json:"is_playing"`
-	Item         track   `json:"item"`
+	Device       *device  `json:"device"`
+	RepeatState  string   `json:"repeat_state"`
+	ShuffleState bool     `json:"shuffle_state"`
+	Context      *context `json:"context"`
+	Timestamp    int      `json:"timestamp"`
+	ProgressMs   int      `json:"progress_ms"`
+	IsPlaying    bool     `json:"is_playing"`
+	Item         *track   `json:"item"`
 }
 
 type currentlyPlayingTrack struct {
-	Context    context `json:"context"`
-	Timestamp  int     `json:"timestamp"`
-	ProgressMs int     `json:"progress_ms"`
-	IsPlaying  bool    `json:"is_playing"`
-	Item       track   `json:"item"`
+	Context    *context `json:"context"`
+	Timestamp  int      `json:"timestamp"`
+	ProgressMs int      `json:"progress_ms"`
+	IsPlaying  bool     `json:"is_playing"`
+	Item       *track   `json:"item"`
 }

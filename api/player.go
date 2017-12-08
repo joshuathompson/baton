@@ -8,7 +8,7 @@ import (
 func GetDevices() (d devices, err error) {
 	t := getAccessToken()
 
-	r := buildRequest("GET", apiURLBase+"me/player/devices", nil)
+	r := buildRequest("GET", apiURLBase+"me/player/devices", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &d)
@@ -19,7 +19,7 @@ func GetDevices() (d devices, err error) {
 func GetCurrentPlaybackInformation() (ctx currentlyPlayingContext, err error) {
 	t := getAccessToken()
 
-	r := buildRequest("GET", apiURLBase+"me/player", nil)
+	r := buildRequest("GET", apiURLBase+"me/player", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &ctx)
@@ -30,7 +30,7 @@ func GetCurrentPlaybackInformation() (ctx currentlyPlayingContext, err error) {
 func GetRecentlyPlayedTracks() (rpt recentlyPlayedTracks, err error) {
 	t := getAccessToken()
 
-	r := buildRequest("GET", apiURLBase+"me/player/recently-played", nil)
+	r := buildRequest("GET", apiURLBase+"me/player/recently-played", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &rpt)
@@ -41,7 +41,7 @@ func GetRecentlyPlayedTracks() (rpt recentlyPlayedTracks, err error) {
 func GetCurrentlyPlayingTrack() (c currentlyPlayingTrack, err error) {
 	t := getAccessToken()
 
-	r := buildRequest("GET", apiURLBase+"me/player/currently-playing", nil)
+	r := buildRequest("GET", apiURLBase+"me/player/currently-playing", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &c)
@@ -49,13 +49,13 @@ func GetCurrentlyPlayingTrack() (c currentlyPlayingTrack, err error) {
 	return c, err
 }
 
-func SetVolume(volume string) error {
+func SetRepeatMode(mode string) error {
 	v := url.Values{}
-	v.Add("volume_percent", volume)
+	v.Add("state", mode)
 
 	t := getAccessToken()
 
-	r := buildRequest("PUT", apiURLBase+"me/player/volume", v)
+	r := buildRequest("PUT", apiURLBase+"me/player/repeat", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)
@@ -63,10 +63,13 @@ func SetVolume(volume string) error {
 	return err
 }
 
-func GetCurrentlyPlaying() error {
+func SetVolume(volume int) error {
+	v := url.Values{}
+	v.Add("volume_percent", strconv.Itoa(volume))
+
 	t := getAccessToken()
 
-	r := buildRequest("GET", apiURLBase+"me/player/currently-playing", nil)
+	r := buildRequest("PUT", apiURLBase+"me/player/volume", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)
@@ -77,7 +80,7 @@ func GetCurrentlyPlaying() error {
 func PausePlayback() error {
 	t := getAccessToken()
 
-	r := buildRequest("PUT", apiURLBase+"me/player/pause", nil)
+	r := buildRequest("PUT", apiURLBase+"me/player/pause", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)
@@ -85,10 +88,35 @@ func PausePlayback() error {
 	return err
 }
 
-func SkipToTrack() error {
+func SeekToPosition(pos int) error {
+	v := url.Values{}
+	v.Add("position_ms", strconv.Itoa(pos))
+
 	t := getAccessToken()
 
-	r := buildRequest("POST", apiURLBase+"me/player/next", nil)
+	r := buildRequest("PUT", apiURLBase+"me/player/seek", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err := makeRequest(r, nil)
+
+	return err
+}
+
+func StartPlayback() error {
+	t := getAccessToken()
+
+	r := buildRequest("PUT", apiURLBase+"me/player/play", nil, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err := makeRequest(r, nil)
+
+	return err
+}
+
+func SkipToNext() error {
+	t := getAccessToken()
+
+	r := buildRequest("POST", apiURLBase+"me/player/next", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)
@@ -99,7 +127,7 @@ func SkipToTrack() error {
 func SkipToPrevious() error {
 	t := getAccessToken()
 
-	r := buildRequest("POST", apiURLBase+"me/player/previous", nil)
+	r := buildRequest("POST", apiURLBase+"me/player/previous", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)
@@ -113,7 +141,7 @@ func ToggleShuffle(state bool) error {
 
 	t := getAccessToken()
 
-	r := buildRequest("PUT", apiURLBase+"me/player/shuffle", v)
+	r := buildRequest("PUT", apiURLBase+"me/player/shuffle", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)

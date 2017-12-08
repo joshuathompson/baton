@@ -1,8 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -18,7 +20,17 @@ func init() {
 	client = &http.Client{}
 }
 
-func buildRequest(method, path string, query url.Values) *http.Request {
+func buildBody(j map[string]interface{}) io.Reader {
+	b, err := json.Marshal(j)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return bytes.NewBuffer(b)
+}
+
+func buildRequest(method, path string, query url.Values, b io.Reader) *http.Request {
 	if query == nil {
 		query = url.Values{}
 	}
@@ -29,7 +41,7 @@ func buildRequest(method, path string, query url.Values) *http.Request {
 		RawQuery: query.Encode(),
 	}
 
-	r, err := http.NewRequest(method, u.String(), nil)
+	r, err := http.NewRequest(method, u.String(), b)
 
 	if err != nil {
 		log.Fatal(err)

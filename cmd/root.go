@@ -11,8 +11,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-
 var rootCmd = &cobra.Command{
 	Use:   "baton",
 	Short: "A CLI tool to orchestrate your Spotify",
@@ -28,24 +26,18 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/baton.json)")
 }
 
 func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	} else {
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		viper.AddConfigPath(home + "/.config")
-		viper.SetConfigName("baton")
-		cfgFile = home + "/.config/baton.json"
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
+
+	viper.AddConfigPath(home + "/.config")
+	viper.SetConfigName("baton")
+	cfgFile := home + "/.config/baton.json"
 
 	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
 		err := ioutil.WriteFile(cfgFile, []byte("{}"), 0666)
@@ -54,7 +46,7 @@ func initConfig() {
 		}
 	}
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 
 	if err != nil {
 		log.Fatal(err)

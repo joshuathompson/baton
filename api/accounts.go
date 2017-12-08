@@ -21,7 +21,7 @@ func GetAuthorizationURL(id string) string {
 	v.Set("redirect_uri", "http://localhost:15298/callback")
 	v.Set("scope", "playlist-read-private user-top-read user-library-read user-read-currently-playing user-read-recently-played user-modify-playback-state user-read-playback-state user-follow-read playlist-read-collaborative")
 
-	r := buildRequest("GET", accountsURLBase+"authorize", v)
+	r := buildRequest("GET", accountsURLBase+"authorize", v, nil)
 	return r.URL.String()
 }
 
@@ -32,7 +32,7 @@ func AuthorizeWithCode(id, secret, code string) {
 	v.Set("code", code)
 	v.Set("redirect_uri", "http://localhost:15298/callback")
 
-	r := buildRequest("POST", accountsURLBase+"api/token", v)
+	r := buildRequest("POST", accountsURLBase+"api/token", v, nil)
 	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r.SetBasicAuth(id, secret)
 
@@ -66,7 +66,7 @@ func getAccessToken() string {
 		v.Set("grant_type", "refresh_token")
 		v.Set("refresh_token", rt)
 
-		r := buildRequest("POST", accountsURLBase+"api/token", v)
+		r := buildRequest("POST", accountsURLBase+"api/token", v, nil)
 		r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 		r.SetBasicAuth(id, secret)
 
