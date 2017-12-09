@@ -14,8 +14,8 @@ func init() {
 
 var playCmd = &cobra.Command{
 	Use:   "play [uri]",
-	Short: "Play specified artist, album, playlist, or song",
-	Long:  `Play specified artist, album, playlist, or song`,
+	Short: "Play specified artist, album, playlist, or track",
+	Long:  `Play specified artist, album, playlist, or track`,
 	Args:  cobra.MaximumNArgs(1),
 	Run:   playURI,
 }

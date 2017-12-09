@@ -31,7 +31,7 @@ func init() {
 
 var seekCmd = &cobra.Command{
 	Use:   "seek [pos]",
-	Short: "Skip to a specific time (seconds) of the current song",
-	Long:  `Skip to a specific time (seconds) of the current song`,
+	Short: "Skip to a specific time (seconds) of the current track",
+	Long:  `Skip to a specific time (seconds) of the current track`,
 	Run:   seekToPosition,
 }

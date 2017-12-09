@@ -112,11 +112,12 @@ func init() {
 }
 
 var volumeCmd = &cobra.Command{
-	Use:           "vol [0-100]",
-	Short:         "Get/Set volume",
-	Long:          `Get/Set volume`,
-	Args:          cobra.MaximumNArgs(1),
-	Run:           getSetVolume,
+	Use:     "vol [0-100]",
+	Short:   "Get/Set volume",
+	Long:    `Get/Set volume`,
+	Args:    cobra.MaximumNArgs(1),
+	Run:     getSetVolume,
+	Aliases: []string{"volume"},
 }
 
 var volumeUpCmd = &cobra.Command{

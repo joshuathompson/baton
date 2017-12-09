@@ -22,8 +22,9 @@ func init() {
 }
 
 var skipToPrevCmd = &cobra.Command{
-	Use:   "prev",
-	Short: "Skip to previous track",
-	Long:  `Skip to previous track`,
-	Run:   skipToPrev,
+	Use:     "prev",
+	Short:   "Skip to previous track",
+	Long:    `Skip to previous track`,
+	Run:     skipToPrev,
+	Aliases: []string{"previous"},
 }

@@ -15,7 +15,7 @@ import (
 func getClientCredentials() (id, secret string) {
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("\nFollow these instructions to authenticate the Baton CLI to change your songs, volume, etc:\n" +
+	fmt.Println("\nFollow these instructions to authenticate the Baton CLI to change your tracks, volume, etc:\n" +
 		"1. Go to https://beta.developer.spotify.com/dashboard\n" +
 		"2. Log in with your Spotify username/password\n" +
 		"3. Create a new app\n" +
@@ -88,8 +88,9 @@ func init() {
 }
 
 var authCmd = &cobra.Command{
-	Use:   "auth",
-	Short: "Authorize Baton to access API on your behalf",
-	Long:  `Authorize Baton to access the Spotify API on your behalf by obtaining a long-lasting refresh token using your client_id, client_secret, and approval`,
-	Run:   authenticate,
+	Use:     "auth",
+	Short:   "Authorize Baton to access the Spotify Web API on your behalf",
+	Long:    `Authorize Baton to access the Spotify Web API on your behalf by obtaining a long-lasting refresh token using your client_id, client_secret, and approval`,
+	Run:     authenticate,
+	Aliases: []string{"authenticate"},
 }
