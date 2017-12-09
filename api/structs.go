@@ -35,24 +35,24 @@ type cursor struct {
 }
 
 type album struct {
-	AlbumType            string            `json:"album"`
-	Artists              []artistSimple    `json:"artists"`
-	AvailableMarkets     []string          `json:"available_markets"`
-	Copyrights           []copyright       `json:"copyrights"`
-	ExternalIDs          map[string]string `json:"external_ids"`
-	ExternalUrls         map[string]string `json:"external_urls"`
-	Genres               []string          `json:"genres"`
-	Href                 string            `json:"href"`
-	ID                   string            `json:"id"`
-	Images               []image           `json:"images"`
-	Label                string            `json:"label"`
-	Name                 string            `json:"name"`
-	Popularity           int               `json:"popularity"`
-	ReleaseDate          string            `json:"release_date"`
-	ReleaseDatePrecision string            `json:"release_date_precision"`
-	Tracks               []tracksInCursor  `json:"tracks"`
-	Type                 string            `json:"type"`
-	URI                  string            `json:"uri"`
+	AlbumType            string                 `json:"album"`
+	Artists              []artistSimple         `json:"artists"`
+	AvailableMarkets     []string               `json:"available_markets"`
+	Copyrights           []copyright            `json:"copyrights"`
+	ExternalIDs          map[string]string      `json:"external_ids"`
+	ExternalUrls         map[string]string      `json:"external_urls"`
+	Genres               []string               `json:"genres"`
+	Href                 string                 `json:"href"`
+	ID                   string                 `json:"id"`
+	Images               []image                `json:"images"`
+	Label                string                 `json:"label"`
+	Name                 string                 `json:"name"`
+	Popularity           int                    `json:"popularity"`
+	ReleaseDate          string                 `json:"release_date"`
+	ReleaseDatePrecision string                 `json:"release_date_precision"`
+	Tracks               []tracksSimpleInCursor `json:"tracks"`
+	Type                 string                 `json:"type"`
+	URI                  string                 `json:"uri"`
 }
 
 type albumSimple struct {
@@ -137,13 +137,40 @@ type trackSimple struct {
 	URI              string            `json:"uri"`
 }
 
-type tracksInCursor struct {
+type albumsSimpleInCursor struct {
+	Href    string        `json:"href"`
+	Items   []albumSimple `json:"items"`
+	Limit   int           `json:"limit"`
+	Next    string        `json:"next"`
+	Cursors *cursor       `json:"cursors"`
+	Total   int           `json:"total"`
+}
+
+type artistsInCursor struct {
+	Href    string   `json:"href"`
+	Items   []artist `json:"items"`
+	Limit   int      `json:"limit"`
+	Next    string   `json:"next"`
+	Cursors *cursor  `json:"cursors"`
+	Total   int      `json:"total"`
+}
+
+type tracksSimpleInCursor struct {
 	Href    string        `json:"href"`
 	Items   []trackSimple `json:"items"`
 	Limit   int           `json:"limit"`
 	Next    string        `json:"next"`
 	Cursors *cursor       `json:"cursors"`
 	Total   int           `json:"total"`
+}
+
+type tracksInCursor struct {
+	Href    string  `json:"href"`
+	Items   []track `json:"items"`
+	Limit   int     `json:"limit"`
+	Next    string  `json:"next"`
+	Cursors *cursor `json:"cursors"`
+	Total   int     `json:"total"`
 }
 
 type playHistory struct {

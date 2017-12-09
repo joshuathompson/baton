@@ -16,14 +16,12 @@ func seekToPosition(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Println(pos)
-
 	err = api.SeekToPosition(pos * 1000)
 
 	if err != nil {
 		fmt.Printf("Failed to restart current track\n")
 	} else {
-		fmt.Printf("Replaying current track\n")
+		fmt.Printf("Skipping to %d seconds\n", pos)
 	}
 }
 
