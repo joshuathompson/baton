@@ -1,8 +1,10 @@
 package api
 
 import (
+	"io"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 func GetDevices() (d devices, err error) {
@@ -102,10 +104,27 @@ func SeekToPosition(pos int) error {
 	return err
 }
 
-func StartPlayback() error {
+func StartPlayback(uri string, offset int) error {
+	var body io.Reader
+	m := make(map[string]interface{})
+
+	if strings.Contains(uri, ":track:") {
+		m["uris"] = strings.Split(uri, ",")
+	} else if len(uri) > 0 {
+		m["context_uri"] = uri
+	}
+
+	if offset > 0 {
+		tm := make(map[string]interface{})
+		tm["position"] = offset - 1
+		m["offset"] = tm
+	}
+
+	body = buildBody(m)
+
 	t := getAccessToken()
 
-	r := buildRequest("PUT", apiURLBase+"me/player/play", nil, nil)
+	r := buildRequest("PUT", apiURLBase+"me/player/play", nil, body)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err := makeRequest(r, nil)

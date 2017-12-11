@@ -24,9 +24,25 @@ type followers struct {
 	Total int    `json:"total"`
 }
 
+type playlistSimpleTracks struct {
+	Href  string `json:"href"`
+	Total int    `json:"total"`
+}
+
 type copyright struct {
 	Text string `json:"text"`
 	Type int    `json:"type"`
+}
+
+type user struct {
+	DisplayName  string            `json:"display_name"`
+	ExternalUrls map[string]string `json:"external_urls"`
+	Followers    *followers        `json:"followers"`
+	Href         string            `json:"href"`
+	ID           string            `json:"id"`
+	Images       []image           `json:"images"`
+	Type         string            `json:"type"`
+	URI          string            `json:"uri"`
 }
 
 type cursor struct {
@@ -137,6 +153,37 @@ type trackSimple struct {
 	URI              string            `json:"uri"`
 }
 
+type playlist struct {
+	Collaborative bool              `json:"collaborative"`
+	Description   string            `json:"description"`
+	ExternalUrls  map[string]string `json:"external_urls"`
+	Href          string            `json:"href"`
+	ID            string            `json:"id"`
+	Images        []image           `json:"images"`
+	Name          string            `json:"name"`
+	Owner         *user             `json:"owner"`
+	Public        bool              `json:"public"`
+	SnapshotID    string            `json:"snapshot_id"`
+	Tracks        []tracksInCursor  `json:"tracks"`
+	Type          string            `json:"type"`
+	URI           string            `json:"uri"`
+}
+
+type playlistSimple struct {
+	Collaborative bool                  `json:"collaborative"`
+	ExternalUrls  map[string]string     `json:"external_urls"`
+	Href          string                `json:"href"`
+	ID            string                `json:"id"`
+	Images        []image               `json:"images"`
+	Name          string                `json:"name"`
+	Owner         *user                 `json:"owner"`
+	Public        bool                  `json:"public"`
+	SnapshotID    string                `json:"snapshot_id"`
+	Tracks        *playlistSimpleTracks `json:"tracks"`
+	Type          string                `json:"type"`
+	URI           string                `json:"uri"`
+}
+
 type albumsSimpleInCursor struct {
 	Href    string        `json:"href"`
 	Items   []albumSimple `json:"items"`
@@ -171,6 +218,15 @@ type tracksInCursor struct {
 	Next    string  `json:"next"`
 	Cursors *cursor `json:"cursors"`
 	Total   int     `json:"total"`
+}
+
+type playlistsSimpleInCursor struct {
+	Href    string           `json:"href"`
+	Items   []playlistSimple `json:"items"`
+	Limit   int              `json:"limit"`
+	Next    string           `json:"next"`
+	Cursors *cursor          `json:"cursors"`
+	Total   int              `json:"total"`
 }
 
 type playHistory struct {
@@ -225,4 +281,11 @@ type currentlyPlayingTrack struct {
 	ProgressMs int      `json:"progress_ms"`
 	IsPlaying  bool     `json:"is_playing"`
 	Item       *track   `json:"item"`
+}
+
+type searchResults struct {
+	Artists   *artistsInCursor         `json:"artists"`
+	Albums    *albumsSimpleInCursor    `json:"albums"`
+	Tracks    *tracksInCursor          `json:"tracks"`
+	Playlists *playlistsSimpleInCursor `json:"playlists"`
 }
