@@ -44,6 +44,18 @@ type PlayerOffsetOptions struct {
 	URI      string `json:"uri,omitempty" url:"uri,omitempty"`
 }
 
+func GetDevices() (d []Device, err error) {
+	var ds Devices
+	t := getAccessToken()
+
+	r := buildRequest("GET", apiURLBase+"me/player/devices", nil, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &ds)
+
+	return ds.Devices, err
+}
+
 func GetPlayerState(opts *Options) (ps PlayerState, err error) {
 	v, err := query.Values(opts)
 
