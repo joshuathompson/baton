@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var volOptions api.Options
+
 func increaseVolume(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(&volOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -27,7 +29,7 @@ func increaseVolume(cmd *cobra.Command, args []string) {
 				v = 100
 			}
 
-			err = api.SetVolume(v)
+			err = api.SetVolume(v, &volOptions)
 
 			if err != nil {
 				fmt.Printf("Failed to set volume\n")
@@ -41,7 +43,7 @@ func increaseVolume(cmd *cobra.Command, args []string) {
 }
 
 func decreaseVolume(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(&volOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -57,7 +59,7 @@ func decreaseVolume(cmd *cobra.Command, args []string) {
 				v = 0
 			}
 
-			err = api.SetVolume(v)
+			err = api.SetVolume(v, &volOptions)
 
 			if err != nil {
 				fmt.Printf("Failed to set volume\n")
@@ -71,7 +73,7 @@ func decreaseVolume(cmd *cobra.Command, args []string) {
 }
 
 func getSetVolume(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(&volOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -89,7 +91,7 @@ func getSetVolume(cmd *cobra.Command, args []string) {
 					return
 				}
 
-				err = api.SetVolume(p)
+				err = api.SetVolume(p, &volOptions)
 
 				if err != nil {
 					fmt.Printf("Failed to set volume\n")
@@ -109,6 +111,8 @@ func init() {
 	rootCmd.AddCommand(volumeCmd)
 	volumeCmd.AddCommand(volumeUpCmd)
 	volumeCmd.AddCommand(volumeDownCmd)
+
+	volumeCmd.PersistentFlags().StringVarP(&volOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var volumeCmd = &cobra.Command{

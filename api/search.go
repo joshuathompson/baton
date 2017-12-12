@@ -1,25 +1,36 @@
 package api
 
-import (
-	"fmt"
-	"net/url"
-	"strconv"
-)
+import "github.com/google/go-querystring/query"
 
-func Search(query, item_types string, limit, offset int) (s searchResults, err error) {
-	v := url.Values{}
-	v.Add("q", query)
-	v.Add("type", item_types)
-	v.Add("limit", strconv.Itoa(limit))
-	v.Add("offset", strconv.Itoa(offset))
+type SearchResults struct {
+	Artists   *FullArtistsPaged     `json:"artists"`
+	Albums    *SimpleAlbumsPaged    `json:"albums"`
+	Tracks    *FullTracksPaged      `json:"tracks"`
+	Playlists *SimplePlaylistsPaged `json:"playlists"`
+}
+
+type SearchOptions struct {
+	Market string `json:"market,omitempty" url:"market,omitempty"`
+	Limit  int    `json:"limit,omitempty" url:"limit,omitempty"`
+	Offset int    `json:"offset,omitempty" url:"offset,omitempty"`
+}
+
+func Search(q, types string, opts *SearchOptions) (sr SearchResults, err error) {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return sr, err
+	}
+
+	v.Add("q", q)
+	v.Add("type", types)
 
 	t := getAccessToken()
 
 	r := buildRequest("GET", apiURLBase+"search", v, nil)
-	fmt.Println(r.URL.String())
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err = makeRequest(r, &s)
+	err = makeRequest(r, &sr)
 
-	return s, err
+	return sr, err
 }

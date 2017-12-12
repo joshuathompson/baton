@@ -7,8 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var prevOptions api.Options
+
 func skipToPrev(cmd *cobra.Command, args []string) {
-	err := api.SkipToPrevious()
+	err := api.SkipToPrevious(&prevOptions)
 
 	if err != nil {
 		fmt.Printf("Failed to skip to previous track\n")
@@ -19,6 +21,8 @@ func skipToPrev(cmd *cobra.Command, args []string) {
 
 func init() {
 	rootCmd.AddCommand(skipToPrevCmd)
+
+	skipToPrevCmd.Flags().StringVarP(&prevOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var skipToPrevCmd = &cobra.Command{

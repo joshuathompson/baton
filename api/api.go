@@ -1,7 +1,6 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -14,20 +13,26 @@ const (
 	apiURLBase = "api.spotify.com/v1/"
 )
 
+type Image struct {
+	Height int    `json:"height"`
+	URL    string `json:"url"`
+	Width  int    `json:"width"`
+}
+
+type Followers struct {
+	Href  string `json:"href"`
+	Total int    `json:"total"`
+}
+
+type Cursor struct {
+	After  string `json:"after"`
+	Before string `json:"before"`
+}
+
 var client *http.Client
 
 func init() {
 	client = &http.Client{}
-}
-
-func buildBody(j map[string]interface{}) io.Reader {
-	b, err := json.Marshal(j)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return bytes.NewBuffer(b)
 }
 
 func buildRequest(method, path string, query url.Values, b io.Reader) *http.Request {

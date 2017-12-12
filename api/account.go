@@ -14,6 +14,17 @@ const (
 	accountsURLBase = "accounts.spotify.com/"
 )
 
+type Tokens struct {
+	AccessToken    string        `json:"access_token"`
+	TokenType      string        `json:"token_type"`
+	ExpiresIn      time.Duration `json:"expires_in"`
+	ExpirationDate time.Time     `json:"expiration_date"`
+	ClientID       string        `json:"client_id"`
+	ClientSecret   string        `json:"client_secret"`
+	RefreshToken   string        `json:"refresh_token"`
+	Scope          string        `json:"scope"`
+}
+
 func GetAuthorizationURL(id string) string {
 	v := url.Values{}
 	v.Set("client_id", id)
@@ -26,7 +37,7 @@ func GetAuthorizationURL(id string) string {
 }
 
 func AuthorizeWithCode(id, secret, code string) {
-	var t tokens
+	var t Tokens
 	v := url.Values{}
 	v.Set("grant_type", "authorization_code")
 	v.Set("code", code)
@@ -50,7 +61,7 @@ func AuthorizeWithCode(id, secret, code string) {
 }
 
 func getAccessToken() string {
-	var t tokens
+	var t Tokens
 
 	rt := viper.GetString("refresh_token")
 	id := viper.GetString("client_id")
@@ -89,7 +100,7 @@ func getAccessToken() string {
 	return viper.GetString("access_token")
 }
 
-func writeTokensToConfig(t tokens) {
+func writeTokensToConfig(t Tokens) {
 	ts, err := json.Marshal(t)
 	if err != nil {
 		log.Fatal(err)

@@ -11,7 +11,7 @@ import (
 )
 
 func reportStatus(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(nil)
 
 	if err != nil {
 		log.Fatal(err)

@@ -9,7 +9,7 @@ import (
 )
 
 func getURIAndURL(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(nil)
 
 	if err != nil {
 		log.Fatal(err)
@@ -24,7 +24,7 @@ func getURIAndURL(cmd *cobra.Command, args []string) {
 }
 
 func getURI(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(nil)
 
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +38,7 @@ func getURI(cmd *cobra.Command, args []string) {
 }
 
 func getURL(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetCurrentPlaybackInformation()
+	ctx, err := api.GetPlayerState(nil)
 
 	if err != nil {
 		log.Fatal(err)

@@ -10,9 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var repeatOptions api.Options
+
 func setRepeatMode(cmd *cobra.Command, args []string) {
 	if len(args) > 0 {
-		err := api.SetRepeatMode(args[0])
+		err := api.SetRepeatMode(args[0], &repeatOptions)
 
 		if err != nil {
 			fmt.Printf("Failed to set repeat mode\n")
@@ -20,7 +22,7 @@ func setRepeatMode(cmd *cobra.Command, args []string) {
 			fmt.Printf("Repeat mode set to %s\n", args[0])
 		}
 	} else {
-		ctx, err := api.GetCurrentPlaybackInformation()
+		ctx, err := api.GetPlayerState(&repeatOptions)
 
 		if err != nil {
 			log.Fatal(err)
@@ -32,6 +34,8 @@ func setRepeatMode(cmd *cobra.Command, args []string) {
 
 func init() {
 	rootCmd.AddCommand(repeatCmd)
+
+	repeatCmd.Flags().StringVarP(&repeatOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var repeatCmd = &cobra.Command{

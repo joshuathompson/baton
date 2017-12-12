@@ -1,97 +1,128 @@
 package api
 
 import (
-	"io"
-	"net/url"
+	"bytes"
+	"encoding/json"
+	"log"
 	"strconv"
-	"strings"
+
+	"github.com/google/go-querystring/query"
 )
 
-func GetDevices() (d devices, err error) {
-	t := getAccessToken()
-
-	r := buildRequest("GET", apiURLBase+"me/player/devices", nil, nil)
-	r.Header.Add("Authorization", "Bearer "+t)
-
-	err = makeRequest(r, &d)
-
-	return d, err
+type PlayerContext struct {
+	Type         string            `json:"type"`
+	Href         string            `json:"href"`
+	ExternalUrls map[string]string `json:"external_urls"`
+	URI          string            `json:"uri"`
 }
 
-func GetCurrentPlaybackInformation() (ctx currentlyPlayingContext, err error) {
-	t := getAccessToken()
-
-	r := buildRequest("GET", apiURLBase+"me/player", nil, nil)
-	r.Header.Add("Authorization", "Bearer "+t)
-
-	err = makeRequest(r, &ctx)
-
-	return ctx, err
+type PlayerState struct {
+	Device       *Device        `json:"device"`
+	RepeatState  string         `json:"repeat_state"`
+	ShuffleState bool           `json:"shuffle_state"`
+	Context      *PlayerContext `json:"context"`
+	Timestamp    int            `json:"timestamp"`
+	ProgressMs   int            `json:"progress_ms"`
+	IsPlaying    bool           `json:"is_playing"`
+	Item         *FullTrack     `json:"item"`
 }
 
-func GetRecentlyPlayedTracks() (rpt recentlyPlayedTracks, err error) {
-	t := getAccessToken()
-
-	r := buildRequest("GET", apiURLBase+"me/player/recently-played", nil, nil)
-	r.Header.Add("Authorization", "Bearer "+t)
-
-	err = makeRequest(r, &rpt)
-
-	return rpt, err
+type Options struct {
+	DeviceID string `json:"device_id,omitempty" url:"device_id,omitempty"`
+	Market   string `json:"market,omitempty" url:"market,omitempty"`
 }
 
-func GetCurrentlyPlayingTrack() (c currentlyPlayingTrack, err error) {
-	t := getAccessToken()
-
-	r := buildRequest("GET", apiURLBase+"me/player/currently-playing", nil, nil)
-	r.Header.Add("Authorization", "Bearer "+t)
-
-	err = makeRequest(r, &c)
-
-	return c, err
+type PlayerOptions struct {
+	DeviceID   string               `json:"device_id,omitempty" url:"device_id,omitempty"`
+	ContextURI string               `json:"context_uri,omitempty" url:"context_uri,omitempty"`
+	URIs       []string             `json:"uris,omitempty" url:"uris,omitempty"`
+	Offset     *PlayerOffsetOptions `json:"offset,omitempty" url:"offset,omitempty"`
 }
 
-func SetRepeatMode(mode string) error {
-	v := url.Values{}
-	v.Add("state", mode)
+type PlayerOffsetOptions struct {
+	Position int    `json:"position,omitempty" url:"position,omitempty"`
+	URI      string `json:"uri,omitempty" url:"uri,omitempty"`
+}
+
+func GetPlayerState(opts *Options) (ps PlayerState, err error) {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return ps, err
+	}
+
+	t := getAccessToken()
+
+	r := buildRequest("GET", apiURLBase+"me/player", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &ps)
+
+	return ps, err
+}
+
+func SetRepeatMode(state string, opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
+	v.Add("state", state)
 
 	t := getAccessToken()
 
 	r := buildRequest("PUT", apiURLBase+"me/player/repeat", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func SetVolume(volume int) error {
-	v := url.Values{}
-	v.Add("volume_percent", strconv.Itoa(volume))
+func SetVolume(vol int, opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
+	v.Add("volume_percent", strconv.Itoa(vol))
 
 	t := getAccessToken()
 
 	r := buildRequest("PUT", apiURLBase+"me/player/volume", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func PausePlayback() error {
+func PausePlayback(opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
 	t := getAccessToken()
 
-	r := buildRequest("PUT", apiURLBase+"me/player/pause", nil, nil)
+	r := buildRequest("PUT", apiURLBase+"me/player/pause", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func SeekToPosition(pos int) error {
-	v := url.Values{}
+func SeekToPosition(pos int, opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
 	v.Add("position_ms", strconv.Itoa(pos))
 
 	t := getAccessToken()
@@ -99,63 +130,78 @@ func SeekToPosition(pos int) error {
 	r := buildRequest("PUT", apiURLBase+"me/player/seek", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func StartPlayback(uri string, offset int) error {
-	var body io.Reader
-	m := make(map[string]interface{})
+func StartPlayback(opts *PlayerOptions) error {
+	v, err := query.Values(opts)
 
-	if strings.Contains(uri, ":track:") {
-		m["uris"] = strings.Split(uri, ",")
-	} else if len(uri) > 0 {
-		m["context_uri"] = uri
+	if err != nil {
+		return err
 	}
 
-	if offset > 0 {
-		tm := make(map[string]interface{})
-		tm["position"] = offset - 1
-		m["offset"] = tm
+	opts.DeviceID = ""
+	j, err := json.Marshal(opts)
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	body = buildBody(m)
+	b := bytes.NewBuffer(j)
 
 	t := getAccessToken()
 
-	r := buildRequest("PUT", apiURLBase+"me/player/play", nil, body)
+	r := buildRequest("PUT", apiURLBase+"me/player/play", v, b)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func SkipToNext() error {
+func SkipToNext(opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
 	t := getAccessToken()
 
-	r := buildRequest("POST", apiURLBase+"me/player/next", nil, nil)
+	r := buildRequest("POST", apiURLBase+"me/player/next", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func SkipToPrevious() error {
+func SkipToPrevious(opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
 	t := getAccessToken()
 
-	r := buildRequest("POST", apiURLBase+"me/player/previous", nil, nil)
+	r := buildRequest("POST", apiURLBase+"me/player/previous", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
 
-func ToggleShuffle(state bool) error {
-	v := url.Values{}
+func ToggleShuffle(state bool, opts *Options) error {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return err
+	}
+
 	v.Add("state", strconv.FormatBool(state))
 
 	t := getAccessToken()
@@ -163,7 +209,7 @@ func ToggleShuffle(state bool) error {
 	r := buildRequest("PUT", apiURLBase+"me/player/shuffle", v, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
-	err := makeRequest(r, nil)
+	err = makeRequest(r, nil)
 
 	return err
 }
