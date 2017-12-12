@@ -9,6 +9,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+
+[[projects]]
+  branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
@@ -100,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bf5b06e0cfa4be2b8501a8001bcf7ab4168ae5dcac4cf9bd58037a8fc37530b7"
+  inputs-digest = "49d553bf2f34752c09b56cfac180794951c7b6d5ffce2a6c6b2932516e32456b"
   solver-name = "gps-cdcl"
   solver-version = 1
