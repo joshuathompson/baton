@@ -30,3 +30,14 @@ type FullArtistsPaged struct {
 	Cursors *Cursor      `json:"cursors"`
 	Total   int          `json:"total"`
 }
+
+func GetAlbumsForArtist(artistID string) (pa SimpleAlbumsPaged, err error) {
+	t := getAccessToken()
+
+	r := buildRequest("GET", apiURLBase+"artists/"+artistID+"/albums", nil, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &pa)
+
+	return pa, err
+}
