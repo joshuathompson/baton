@@ -39,13 +39,23 @@ type SimpleAlbum struct {
 	URI              string            `json:"uri"`
 }
 
-type SimpleAlbumsPaged struct {
+type SimpleAlbumsPagedWithCursor struct {
 	Href    string        `json:"href"`
 	Items   []SimpleAlbum `json:"items"`
 	Limit   int           `json:"limit"`
 	Next    string        `json:"next"`
 	Cursors *Cursor       `json:"cursors"`
 	Total   int           `json:"total"`
+}
+
+type SimpleAlbumsPaged struct {
+	Href     string        `json:"href"`
+	Items    []SimpleAlbum `json:"items"`
+	Limit    int           `json:"limit"`
+	Next     string        `json:"next"`
+	Offset   int           `json:"offset"`
+	Previous string        `json:"previous"`
+	Total    int           `json:"total"`
 }
 
 func GetTracksForAlbum(albumID string) (pt SimpleTracksPaged, err error) {

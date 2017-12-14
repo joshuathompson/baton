@@ -22,13 +22,23 @@ type SimpleArtist struct {
 	URI          string            `json:"uri"`
 }
 
-type FullArtistsPaged struct {
+type FullArtistsPagedWithCursor struct {
 	Href    string       `json:"href"`
 	Items   []FullArtist `json:"items"`
 	Limit   int          `json:"limit"`
 	Next    string       `json:"next"`
 	Cursors *Cursor      `json:"cursors"`
 	Total   int          `json:"total"`
+}
+
+type FullArtistsPaged struct {
+	Href     string       `json:"href"`
+	Items    []FullArtist `json:"items"`
+	Limit    int          `json:"limit"`
+	Next     string       `json:"next"`
+	Offset   int          `json:"offset"`
+	Previous string       `json:"previous"`
+	Total    int          `json:"total"`
 }
 
 func GetAlbumsForArtist(artistID string) (pa SimpleAlbumsPaged, err error) {

@@ -20,13 +20,23 @@ type SimplePlaylist struct {
 	URI           string              `json:"uri"`
 }
 
-type SimplePlaylistsPaged struct {
+type SimplePlaylistsPagedWithCursor struct {
 	Href    string           `json:"href"`
 	Items   []SimplePlaylist `json:"items"`
 	Limit   int              `json:"limit"`
 	Next    string           `json:"next"`
 	Cursors *Cursor          `json:"cursors"`
 	Total   int              `json:"total"`
+}
+
+type SimplePlaylistsPaged struct {
+	Href     string           `json:"href"`
+	Items    []SimplePlaylist `json:"items"`
+	Limit    int              `json:"limit"`
+	Next     string           `json:"next"`
+	Offset   int              `json:"offset"`
+	Previous string           `json:"previous"`
+	Total    int              `json:"total"`
 }
 
 func GetTracksForPlaylist(userID, playlistID string) (pt SimpleTracksPaged, err error) {
