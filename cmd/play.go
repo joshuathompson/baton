@@ -9,13 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var playOptions api.PlayerOptions
-var playSearchOptions api.SearchOptions
-
 func playUri(cmd *cobra.Command, args []string) {
 	if len(args) > 0 {
-		playOptions.ContextURI = args[0]
-		err := api.StartPlayback(&playOptions)
+		playerOptions.ContextURI = args[0]
+		err := api.StartPlayback(&playerOptions)
 
 		if err != nil {
 			log.Fatal(err)
@@ -23,7 +20,7 @@ func playUri(cmd *cobra.Command, args []string) {
 
 		fmt.Printf("Playing uri: %s\n", args[0])
 	} else {
-		err := api.StartPlayback(&playOptions)
+		err := api.StartPlayback(&playerOptions)
 
 		if err != nil {
 			log.Fatal(err)
@@ -34,15 +31,15 @@ func playUri(cmd *cobra.Command, args []string) {
 }
 
 func playArtist(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "artist", &playSearchOptions)
+	res, err := api.Search(args[0], "artist", &searchOptions)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	playOptions.ContextURI = res.Artists.Items[0].URI
+	playerOptions.ContextURI = res.Artists.Items[0].URI
 
-	err = api.StartPlayback(&playOptions)
+	err = api.StartPlayback(&playerOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -52,15 +49,15 @@ func playArtist(cmd *cobra.Command, args []string) {
 }
 
 func playAlbum(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "album", &playSearchOptions)
+	res, err := api.Search(args[0], "album", &searchOptions)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	playOptions.ContextURI = res.Albums.Items[0].URI
+	playerOptions.ContextURI = res.Albums.Items[0].URI
 
-	err = api.StartPlayback(&playOptions)
+	err = api.StartPlayback(&playerOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -76,15 +73,15 @@ func playAlbum(cmd *cobra.Command, args []string) {
 }
 
 func playPlaylist(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "playlist", &playSearchOptions)
+	res, err := api.Search(args[0], "playlist", &searchOptions)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	playOptions.ContextURI = res.Playlists.Items[0].URI
+	playerOptions.ContextURI = res.Playlists.Items[0].URI
 
-	err = api.StartPlayback(&playOptions)
+	err = api.StartPlayback(&playerOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -94,7 +91,7 @@ func playPlaylist(cmd *cobra.Command, args []string) {
 }
 
 func playTrack(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "track", &playSearchOptions)
+	res, err := api.Search(args[0], "track", &searchOptions)
 
 	if err != nil {
 		log.Fatal(err)
@@ -103,12 +100,12 @@ func playTrack(cmd *cobra.Command, args []string) {
 	track := res.Tracks.Items[0]
 
 	if track.Album != nil {
-		playOptions.ContextURI = track.Album.URI
-		playOptions.Offset = &api.PlayerOffsetOptions{URI: track.URI}
-		err = api.StartPlayback(&playOptions)
+		playerOptions.ContextURI = track.Album.URI
+		playerOptions.Offset = &api.PlayerOffsetOptions{URI: track.URI}
+		err = api.StartPlayback(&playerOptions)
 	} else {
-		playOptions.ContextURI = track.URI
-		err = api.StartPlayback(&playOptions)
+		playerOptions.ContextURI = track.URI
+		err = api.StartPlayback(&playerOptions)
 	}
 
 	if err != nil {
@@ -125,7 +122,7 @@ func init() {
 	playCmd.AddCommand(playPlaylistCmd)
 	playCmd.AddCommand(playTrackCmd)
 
-	playCmd.PersistentFlags().StringVarP(&playOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
+	playCmd.PersistentFlags().StringVarP(&playerOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var playCmd = &cobra.Command{

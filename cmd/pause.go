@@ -8,17 +8,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var pauseOptions api.Options
-
 func pausePlayer(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetPlayerState(&pauseOptions)
+	ctx, err := api.GetPlayerState(&options)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if ctx.IsPlaying {
-		err = api.PausePlayback(&pauseOptions)
+		err = api.PausePlayback(&options)
 
 		if err != nil {
 			fmt.Printf("Failed to pause\n")
@@ -39,7 +37,7 @@ func pausePlayer(cmd *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(pauseCmd)
 
-	pauseCmd.Flags().StringVarP(&pauseOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
+	pauseCmd.Flags().StringVarP(&options.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var pauseCmd = &cobra.Command{

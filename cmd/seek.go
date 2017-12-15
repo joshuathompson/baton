@@ -8,8 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var seekOptions api.Options
-
 func seekToPosition(cmd *cobra.Command, args []string) {
 	pos, err := strconv.Atoi(args[0])
 
@@ -18,7 +16,7 @@ func seekToPosition(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	err = api.SeekToPosition(pos * 1000, &seekOptions)
+	err = api.SeekToPosition(pos * 1000, &options)
 
 	if err != nil {
 		fmt.Printf("Failed to restart current track\n")
@@ -30,7 +28,7 @@ func seekToPosition(cmd *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(seekCmd)
 
-	seekCmd.Flags().StringVarP(&seekOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
+	seekCmd.Flags().StringVarP(&options.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var seekCmd = &cobra.Command{

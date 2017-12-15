@@ -8,16 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var shuffleOptions api.Options
-
 func toggleShuffle(cmd *cobra.Command, args []string) {
-	ctx, err := api.GetPlayerState(&shuffleOptions)
+	ctx, err := api.GetPlayerState(&options)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = api.ToggleShuffle(!ctx.ShuffleState, &shuffleOptions)
+	err = api.ToggleShuffle(!ctx.ShuffleState, &options)
 
 	if err != nil {
 		fmt.Printf("Failed to toggle shuffle\n")
@@ -33,7 +31,7 @@ func toggleShuffle(cmd *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(shuffleCmd)
 
-	shuffleCmd.Flags().StringVarP(&shuffleOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
+	shuffleCmd.Flags().StringVarP(&options.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var shuffleCmd = &cobra.Command{

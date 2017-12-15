@@ -7,10 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var replayOptions api.Options
-
 func replayTrack(cmd *cobra.Command, args []string) {
-	err := api.SeekToPosition(0, &replayOptions)
+	err := api.SeekToPosition(0, &options)
 
 	if err != nil {
 		fmt.Printf("Failed to restart current track\n")
@@ -22,7 +20,7 @@ func replayTrack(cmd *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(replayTrackCmd)
 
-	replayTrackCmd.Flags().StringVarP(&replayOptions.DeviceID, "device", "d", "", "id of the device this command is targeting")
+	replayTrackCmd.Flags().StringVarP(&options.DeviceID, "device", "d", "", "id of the device this command is targeting")
 }
 
 var replayTrackCmd = &cobra.Command{

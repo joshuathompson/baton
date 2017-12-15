@@ -6,10 +6,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/joshuathompson/baton/api"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+var options api.Options
+var playerOptions api.PlayerOptions
+var searchOptions api.SearchOptions
 
 var rootCmd = &cobra.Command{
 	Use:   "baton",
