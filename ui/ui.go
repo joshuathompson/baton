@@ -133,7 +133,7 @@ func layout(g *gocui.Gui) error {
 		v.Frame = false
 		v.BgColor = gocui.ColorBlue
 
-		fmt.Fprintf(v, "[q] Quit [h] Go back [j] Down [k] Up [l] Go forward [m] Load Additional [p] Play")
+		fmt.Fprintf(v, "[q] Quit [backspace] Go back [j] Down [k] Up [enter] Go forward [m] Load Additional [p] Play")
 	}
 
 	return nil
@@ -141,41 +141,12 @@ func layout(g *gocui.Gui) error {
 
 func keybindings(g *gocui.Gui) error {
 	err := g.SetKeybinding("", 'q', gocui.ModNone, quit)
-
-	if err != nil {
-		return err
-	}
-
 	err = g.SetKeybinding("table", 'j', gocui.ModNone, cursorDown)
-
-	if err != nil {
-		return err
-	}
-
 	err = g.SetKeybinding("table", 'k', gocui.ModNone, cursorUp)
-
-	if err != nil {
-		return err
-	}
-
 	err = g.SetKeybinding("table", 'p', gocui.ModNone, playSelected)
-
-	if err != nil {
-		return err
-	}
-
-	err = g.SetKeybinding("table", 'l', gocui.ModNone, pushTable)
-
-	if err != nil {
-		return err
-	}
-
-	err = g.SetKeybinding("table", 'h', gocui.ModNone, popTable)
-
-	if err != nil {
-		return err
-	}
-
+	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, pushTable)
+	err = g.SetKeybinding("table", gocui.KeyBackspace, gocui.ModNone, popTable)
+	err = g.SetKeybinding("table", gocui.KeyBackspace2, gocui.ModNone, popTable)
 	err = g.SetKeybinding("table", 'm', gocui.ModNone, loadNextRecords)
 
 	if err != nil {
