@@ -42,7 +42,11 @@ func (t *PlaylistTrackTable) renderHeader(v *gocui.View, maxX int) {
 	lengthHeader := utils.LeftPaddedString("LENGTH", columnWidths["length"], 2)
 	popularityHeader := utils.LeftPaddedString("POPULARITY", columnWidths["popularity"], 2)
 
-	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("TRACKS", maxX, 2))
+	loadedLength := maxX / 3
+	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d tracks", len(t.data.Items), t.data.Total), loadedLength, 2)
+	titleLength := maxX - loadedLength
+
+	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("TRACKS", titleLength, 2), loadedHeader)
 	fmt.Fprintf(v, "\u001b[1m%s %s %s %s %s\u001b[0m\n", namesHeader, artistHeader, albumHeader, lengthHeader, popularityHeader)
 }
 
@@ -69,6 +73,19 @@ func (t *PlaylistTrackTable) getTableLength() int {
 }
 
 func (t *PlaylistTrackTable) loadNextRecords() error {
+	if t.data.Next != "" {
+		nextTracks, err := api.GetNextTracksForPlaylist(t.data.Next)
+
+		if err != nil {
+			return err
+		}
+
+		t.data.Href = nextTracks.Href
+		t.data.Offset = nextTracks.Offset
+		t.data.Next = nextTracks.Next
+		t.data.Previous = nextTracks.Previous
+		t.data.Items = append(t.data.Items, nextTracks.Items...)
+	}
 	return nil
 }
 

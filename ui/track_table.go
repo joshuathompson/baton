@@ -12,6 +12,7 @@ import (
 
 type TrackTable struct {
 	tracks *api.FullTracksPaged
+	title  string
 }
 
 func NewTrackTable(fullTracksPaged *api.FullTracksPaged) *TrackTable {
@@ -40,7 +41,11 @@ func (t *TrackTable) renderHeader(v *gocui.View, maxX int) {
 	lengthHeader := utils.LeftPaddedString("LENGTH", columnWidths["length"], 2)
 	popularityHeader := utils.LeftPaddedString("POPULARITY", columnWidths["popularity"], 2)
 
-	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("TRACKS", maxX, 2))
+	loadedLength := maxX / 3
+	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d tracks", len(t.tracks.Items), t.tracks.Total), loadedLength, 2)
+	titleLength := maxX - loadedLength
+
+	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("TRACKS", titleLength, 2), loadedHeader)
 	fmt.Fprintf(v, "\u001b[1m%s %s %s %s %s\u001b[0m\n", namesHeader, artistHeader, albumHeader, lengthHeader, popularityHeader)
 }
 
@@ -67,6 +72,22 @@ func (t *TrackTable) getTableLength() int {
 }
 
 func (t *TrackTable) loadNextRecords() error {
+	if t.tracks.Next != "" {
+		res, err := api.GetNextSearchResults(t.tracks.Next)
+
+		if err != nil {
+			return err
+		}
+
+		nextTracks := res.Tracks
+
+		t.tracks.Href = nextTracks.Href
+		t.tracks.Offset = nextTracks.Offset
+		t.tracks.Next = nextTracks.Next
+		t.tracks.Previous = nextTracks.Previous
+		t.tracks.Items = append(t.tracks.Items, nextTracks.Items...)
+	}
+
 	return nil
 }
 

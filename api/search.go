@@ -1,6 +1,10 @@
 package api
 
-import "github.com/google/go-querystring/query"
+import (
+	"net/http"
+
+	"github.com/google/go-querystring/query"
+)
 
 type SearchResults struct {
 	Artists   *FullArtistsPaged     `json:"artists"`
@@ -28,6 +32,17 @@ func Search(q, types string, opts *SearchOptions) (sr SearchResults, err error) 
 	t := getAccessToken()
 
 	r := buildRequest("GET", apiURLBase+"search", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &sr)
+
+	return sr, err
+}
+
+func GetNextSearchResults(url string) (sr *SearchResults, err error) {
+	t := getAccessToken()
+
+	r, err := http.NewRequest("GET", url, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &sr)

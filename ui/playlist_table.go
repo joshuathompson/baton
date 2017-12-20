@@ -37,7 +37,11 @@ func (p *PlaylistTable) renderHeader(v *gocui.View, maxX int) {
 	collaborativeHeader := utils.LeftPaddedString("COLLABORATIVE", columnWidths["collaborative"], 2)
 	totalHeader := utils.LeftPaddedString("TOTAL", columnWidths["total"], 2)
 
-	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("PLAYLISTS", maxX, 2))
+	loadedLength := maxX / 3
+	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d playlists", len(p.playlists.Items), p.playlists.Total), loadedLength, 2)
+	titleLength := maxX - loadedLength
+
+	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("PLAYLISTS", titleLength, 2), loadedHeader)
 	fmt.Fprintf(v, "\u001b[1m%s %s %s %s\u001b[0m\n", nameHeader, ownerHeader, totalHeader, collaborativeHeader)
 }
 
@@ -59,6 +63,22 @@ func (p *PlaylistTable) getTableLength() int {
 }
 
 func (p *PlaylistTable) loadNextRecords() error {
+	if p.playlists.Next != "" {
+		res, err := api.GetNextSearchResults(p.playlists.Next)
+
+		if err != nil {
+			return err
+		}
+
+		nextPlaylists := res.Playlists
+
+		p.playlists.Href = nextPlaylists.Href
+		p.playlists.Offset = nextPlaylists.Offset
+		p.playlists.Next = nextPlaylists.Next
+		p.playlists.Previous = nextPlaylists.Previous
+		p.playlists.Items = append(p.playlists.Items, nextPlaylists.Items...)
+	}
+
 	return nil
 }
 

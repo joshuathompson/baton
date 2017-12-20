@@ -1,5 +1,7 @@
 package api
 
+import "net/http"
+
 type FullArtist struct {
 	ExternalUrls map[string]string `json:"external_urls"`
 	Followers    *Followers        `json:"followers"`
@@ -36,6 +38,17 @@ func GetAlbumsForArtist(artistID string) (pa SimpleAlbumsPaged, err error) {
 	t := getAccessToken()
 
 	r := buildRequest("GET", apiURLBase+"artists/"+artistID+"/albums", nil, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &pa)
+
+	return pa, err
+}
+
+func GetNextAlbumsForArtist(url string) (pa SimpleAlbumsPaged, err error) {
+	t := getAccessToken()
+
+	r, err := http.NewRequest("GET", url, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &pa)

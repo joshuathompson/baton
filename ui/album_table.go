@@ -33,7 +33,11 @@ func (a *AlbumTable) renderHeader(v *gocui.View, maxX int) {
 	namesHeader := utils.LeftPaddedString("NAME", columnWidths["name"], 2)
 	artistsHeader := utils.LeftPaddedString("ARTISTS", columnWidths["artists"], 2)
 
-	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("ALBUMS", maxX, 2))
+	loadedLength := maxX / 3
+	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d albums", len(a.albums.Items), a.albums.Total), loadedLength, 2)
+	titleLength := maxX - loadedLength
+
+	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("ALBUMS", titleLength, 2), loadedHeader)
 	fmt.Fprintf(v, "\u001b[1m%s %s\u001b[0m\n", namesHeader, artistsHeader)
 }
 
@@ -57,6 +61,35 @@ func (a *AlbumTable) getTableLength() int {
 }
 
 func (a *AlbumTable) loadNextRecords() error {
+	if a.albums.Next != "" {
+		if strings.Contains(a.albums.Next, "api.spotify.com/v1/search") {
+			res, err := api.GetNextSearchResults(a.albums.Next)
+
+			if err != nil {
+				return err
+			}
+
+			nextAlbums := res.Albums
+
+			a.albums.Href = nextAlbums.Href
+			a.albums.Offset = nextAlbums.Offset
+			a.albums.Next = nextAlbums.Next
+			a.albums.Previous = nextAlbums.Previous
+			a.albums.Items = append(a.albums.Items, nextAlbums.Items...)
+		} else {
+			nextAlbums, err := api.GetNextAlbumsForArtist(a.albums.Next)
+
+			if err != nil {
+				return err
+			}
+
+			a.albums.Href = nextAlbums.Href
+			a.albums.Offset = nextAlbums.Offset
+			a.albums.Next = nextAlbums.Next
+			a.albums.Previous = nextAlbums.Previous
+			a.albums.Items = append(a.albums.Items, nextAlbums.Items...)
+		}
+	}
 	return nil
 }
 

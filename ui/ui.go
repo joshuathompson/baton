@@ -82,6 +82,10 @@ func popTable(g *gocui.Gui, v *gocui.View) error {
 	return nil
 }
 
+func loadNextRecords(g *gocui.Gui, v *gocui.View) error {
+	return currentTable.loadNextRecords()
+}
+
 func layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 	v, err := g.SetView("header", -1, -1, maxX, 3)
@@ -129,7 +133,7 @@ func layout(g *gocui.Gui) error {
 		v.Frame = false
 		v.BgColor = gocui.ColorBlue
 
-		fmt.Fprintf(v, "[q] Quit [j] Down [k] Up [p] Play [enter] Go into [backspace] Go back")
+		fmt.Fprintf(v, "[q] Quit [h] Go back [j] Down [k] Up [l] Go forward [m] Load Additional [p] Play")
 	}
 
 	return nil
@@ -160,19 +164,19 @@ func keybindings(g *gocui.Gui) error {
 		return err
 	}
 
-	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, pushTable)
+	err = g.SetKeybinding("table", 'l', gocui.ModNone, pushTable)
 
 	if err != nil {
 		return err
 	}
 
-	err = g.SetKeybinding("table", gocui.KeyBackspace2, gocui.ModNone, popTable)
+	err = g.SetKeybinding("table", 'h', gocui.ModNone, popTable)
 
 	if err != nil {
 		return err
 	}
 
-	err = g.SetKeybinding("table", gocui.KeyBackspace, gocui.ModNone, popTable)
+	err = g.SetKeybinding("table", 'm', gocui.ModNone, loadNextRecords)
 
 	if err != nil {
 		return err

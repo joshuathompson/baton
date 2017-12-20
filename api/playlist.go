@@ -1,5 +1,7 @@
 package api
 
+import "net/http"
+
 type PlaylistTrackLinks struct {
 	Href  string `json:"href"`
 	Total int    `json:"total"`
@@ -34,6 +36,17 @@ func GetTracksForPlaylist(userID, playlistID string) (pt PlaylistTracksPaged, er
 	t := getAccessToken()
 
 	r := buildRequest("GET", apiURLBase+"users/"+userID+"/playlists/"+playlistID+"/tracks", nil, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &pt)
+
+	return pt, err
+}
+
+func GetNextTracksForPlaylist(url string) (pt PlaylistTracksPaged, err error) {
+	t := getAccessToken()
+
+	r, err := http.NewRequest("GET", url, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &pt)

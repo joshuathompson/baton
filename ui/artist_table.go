@@ -36,7 +36,11 @@ func (a *ArtistTable) renderHeader(v *gocui.View, maxX int) {
 	genresHeader := utils.LeftPaddedString("GENRES", columnWidths["genre"], 2)
 	popularitiesHeader := utils.LeftPaddedString("POPULARITY", columnWidths["popularity"], 2)
 
-	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("ARTISTS", maxX, 2))
+	loadedLength := maxX / 3
+	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d artists", len(a.artists.Items), a.artists.Total), loadedLength, 2)
+	titleLength := maxX - loadedLength
+
+	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("ARTISTS", titleLength, 2), loadedHeader)
 	fmt.Fprintf(v, "\u001b[1m%s %s %s\u001b[0m\n", namesHeader, genresHeader, popularitiesHeader)
 }
 
@@ -57,6 +61,21 @@ func (a *ArtistTable) getTableLength() int {
 }
 
 func (a *ArtistTable) loadNextRecords() error {
+	if a.artists.Next != "" {
+		res, err := api.GetNextSearchResults(a.artists.Next)
+
+		if err != nil {
+			return err
+		}
+
+		nextArtists := res.Artists
+
+		a.artists.Href = nextArtists.Href
+		a.artists.Offset = nextArtists.Offset
+		a.artists.Next = nextArtists.Next
+		a.artists.Previous = nextArtists.Previous
+		a.artists.Items = append(a.artists.Items, nextArtists.Items...)
+	}
 	return nil
 }
 

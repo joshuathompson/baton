@@ -1,5 +1,7 @@
 package api
 
+import "net/http"
+
 type SimpleAlbum struct {
 	AlbumType        string            `json:"album"`
 	Artists          []SimpleArtist    `json:"artists"`
@@ -27,6 +29,17 @@ func GetTracksForAlbum(albumID string) (pt SimpleTracksPaged, err error) {
 	t := getAccessToken()
 
 	r := buildRequest("GET", apiURLBase+"albums/"+albumID+"/tracks", nil, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &pt)
+
+	return pt, err
+}
+
+func GetNextTracksForAlbum(url string) (pt SimpleTracksPaged, err error) {
+	t := getAccessToken()
+
+	r, err := http.NewRequest("GET", url, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &pt)
