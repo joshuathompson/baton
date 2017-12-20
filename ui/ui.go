@@ -113,7 +113,7 @@ func layout(g *gocui.Gui) error {
 		v.SelBgColor = gocui.ColorWhite
 		v.SelFgColor = gocui.ColorBlack
 
-		_, err = g.SetCurrentView("table")
+		err = g.SetCurrentView("table")
 
 		if err != nil {
 			return err
@@ -188,15 +188,13 @@ func keybindings(g *gocui.Gui) error {
 func Run(initialTable Table) error {
 	currentTable = initialTable
 
-	g, err := gocui.NewGui(gocui.OutputNormal)
-	if err != nil {
-		return err
-	}
+	g := gocui.NewGui()
+	g.Init()
 	defer g.Close()
 
-	g.SetManagerFunc(layout)
+	g.SetLayout(layout)
 
-	err = keybindings(g)
+	err := keybindings(g)
 
 	if err != nil {
 		return err
