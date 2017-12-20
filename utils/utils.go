@@ -31,3 +31,15 @@ func MillisecondsToFormattedTime(i int) string {
 
 	return strings.Join(output, ":")
 }
+
+func LeftPaddedString(value string, maxValueLength, padAmount int) string {
+	valueLength := len(value)
+	if maxValueLength-padAmount > valueLength {
+		return strings.Repeat(" ", padAmount) + value + strings.Repeat(" ", maxValueLength-valueLength-padAmount)
+	} else if maxValueLength-padAmount < valueLength {
+		tmp := strings.Trim(value[0:maxValueLength-padAmount-3], " ") + "..."
+		return strings.Repeat(" ", padAmount) + tmp + strings.Repeat(" ", maxValueLength-len(tmp)-padAmount)
+	}
+
+	return value
+}
