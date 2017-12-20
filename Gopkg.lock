@@ -26,10 +26,22 @@
   version = "v1.0"
 
 [[projects]]
+  name = "github.com/jroimartin/gocui"
+  packages = ["."]
+  revision = "4e9ce9a8e26f2ef33dfe297dbdfca148733b6b9b"
+  version = "v0.3.0"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
-  revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
-  version = "v1.7.3"
+  revision = "d419a98cdbed11a922bf76f257b7c4be79b50e73"
+  version = "v1.7.4"
+
+[[projects]]
+  name = "github.com/mattn/go-runewidth"
+  packages = ["."]
+  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
+  version = "v0.0.2"
 
 [[projects]]
   branch = "master"
@@ -42,6 +54,12 @@
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/nsf/termbox-go"
+  packages = ["."]
+  revision = "aa4a75b1c20a2b03751b1a9f7e41d58bd6f71c43"
 
 [[projects]]
   name = "github.com/pelletier/go-toml"
@@ -89,13 +107,13 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "b8f5ef32195cae6470b728e8ca677f0dbed1a004"
+  revision = "d818ba11af4465e00c1998bd3f8a55603b422290"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
   packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
-  revision = "be25de41fadfae372d6470bda81ca6beb55ef551"
+  revision = "eb22672bea55af56d225d4e35405f4d2e9f062a0"
 
 [[projects]]
   branch = "v2"
@@ -106,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "49d553bf2f34752c09b56cfac180794951c7b6d5ffce2a6c6b2932516e32456b"
+  inputs-digest = "899b906113446d7a47eb9605789d4910470ca0a5fe89c87e33726d02eb863637"
   solver-name = "gps-cdcl"
   solver-version = 1
