@@ -11,19 +11,27 @@ type Table interface {
 	renderHeader(v *gocui.View, maxX int)
 	getTableLength() int
 	loadNextRecords() error
-	playSelected() error
-	newTableFromSelection() (Table, error)
+	playSelected(selectedIndex int) error
+	newTableFromSelection(selectedIndex int) (Table, error)
 }
 
-var tables []Table
 var currentTable Table
+var previousTables []Table
+var previousCursors []int
 
 func quit(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
 }
 
-func cursorDown(g *gocui.Gui, v *gocui.View) error {
+func getSelectedY(v *gocui.View) int {
 	_, y := v.Cursor()
+	_, oy := v.Origin()
+
+	return y + oy
+}
+
+func cursorDown(g *gocui.Gui, v *gocui.View) error {
+	y := getSelectedY(v)
 	if y < currentTable.getTableLength()-1 {
 		v.MoveCursor(0, 1, false)
 	}
@@ -32,6 +40,45 @@ func cursorDown(g *gocui.Gui, v *gocui.View) error {
 
 func cursorUp(g *gocui.Gui, v *gocui.View) error {
 	v.MoveCursor(0, -1, false)
+	return nil
+}
+
+func playSelected(g *gocui.Gui, v *gocui.View) error {
+	y := getSelectedY(v)
+	return currentTable.playSelected(y)
+}
+
+func pushTable(g *gocui.Gui, v *gocui.View) error {
+	y := getSelectedY(v)
+	nt, err := currentTable.newTableFromSelection(y)
+
+	if err != nil {
+		return err
+	}
+
+	if nt != nil {
+		previousCursors = append(previousCursors, y)
+		previousTables = append(previousTables, currentTable)
+		currentTable = nt
+		v.SetCursor(0, 0)
+	}
+	return nil
+}
+
+func popTable(g *gocui.Gui, v *gocui.View) error {
+	if len(previousTables) > 0 {
+		lastIndex := previousCursors[len(previousCursors)-1]
+		currentTable = previousTables[len(previousTables)-1]
+
+		previousCursors = previousCursors[:len(previousCursors)-1]
+		previousTables = previousTables[:len(previousTables)-1]
+
+		err := v.SetCursor(0, lastIndex)
+
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -82,7 +129,7 @@ func layout(g *gocui.Gui) error {
 		v.Frame = false
 		v.BgColor = gocui.ColorBlue
 
-		fmt.Fprintf(v, "[q] Quit [j] Down [k] Up [p] Play [enter] Load items for selected [backspace] Go back")
+		fmt.Fprintf(v, "[q] Quit [j] Down [k] Up [p] Play [enter] Go into [backspace] Go back")
 	}
 
 	return nil
@@ -107,11 +154,34 @@ func keybindings(g *gocui.Gui) error {
 		return err
 	}
 
+	err = g.SetKeybinding("table", 'p', gocui.ModNone, playSelected)
+
+	if err != nil {
+		return err
+	}
+
+	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, pushTable)
+
+	if err != nil {
+		return err
+	}
+
+	err = g.SetKeybinding("table", gocui.KeyBackspace2, gocui.ModNone, popTable)
+
+	if err != nil {
+		return err
+	}
+
+	err = g.SetKeybinding("table", gocui.KeyBackspace, gocui.ModNone, popTable)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func Run(initialTable Table) error {
-	tables = append(tables, initialTable)
 	currentTable = initialTable
 
 	g, err := gocui.NewGui(gocui.OutputNormal)

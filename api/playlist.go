@@ -39,10 +39,10 @@ type SimplePlaylistsPaged struct {
 	Total    int              `json:"total"`
 }
 
-func GetTracksForPlaylist(userID, playlistID string) (pt SimpleTracksPaged, err error) {
+func GetTracksForPlaylist(userID, playlistID string) (pt PlaylistTracksPaged, err error) {
 	t := getAccessToken()
 
-	r := buildRequest("GET", apiURLBase+"users/"+userID+"/playlist/"+playlistID+"/tracks", nil, nil)
+	r := buildRequest("GET", apiURLBase+"users/"+userID+"/playlists/"+playlistID+"/tracks", nil, nil)
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, &pt)

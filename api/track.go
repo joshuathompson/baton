@@ -1,5 +1,7 @@
 package api
 
+import "time"
+
 type TrackLink struct {
 	ExternalUrls map[string]string `json:"external_urls"`
 	Href         string            `json:"href"`
@@ -47,6 +49,13 @@ type SimpleTrack struct {
 	URI              string            `json:"uri"`
 }
 
+type PlaylistTrack struct {
+	AddedAt *time.Time `json:"added_at"`
+	AddedBy *User      `json:"added_by"`
+	IsLocal bool       `json:"is_local"`
+	Track   FullTrack  `json:"track"`
+}
+
 type SimpleTracksPagedWithCursor struct {
 	Href    string        `json:"href"`
 	Items   []SimpleTrack `json:"items"`
@@ -83,4 +92,14 @@ type FullTracksPaged struct {
 	Offset   int         `json:"offset"`
 	Previous string      `json:"previous"`
 	Total    int         `json:"total"`
+}
+
+type PlaylistTracksPaged struct {
+	Href     string          `json:"href"`
+	Items    []PlaylistTrack `json:"items"`
+	Limit    int             `json:"limit"`
+	Next     string          `json:"next"`
+	Offset   int             `json:"offset"`
+	Previous string          `json:"previous"`
+	Total    int             `json:"total"`
 }

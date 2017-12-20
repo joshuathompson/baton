@@ -20,7 +20,7 @@ func NewArtistTable(artistsPaged *api.FullArtistsPaged) *ArtistTable {
 	}
 }
 
-func (a ArtistTable) getColumnWidths(maxX int) map[string]int {
+func (a *ArtistTable) getColumnWidths(maxX int) map[string]int {
 	m := make(map[string]int)
 	m["name"] = maxX / 3
 	m["genre"] = maxX / 2
@@ -29,18 +29,18 @@ func (a ArtistTable) getColumnWidths(maxX int) map[string]int {
 	return m
 }
 
-func (a ArtistTable) renderHeader(v *gocui.View, maxX int) {
+func (a *ArtistTable) renderHeader(v *gocui.View, maxX int) {
 	columnWidths := a.getColumnWidths(maxX)
 
 	namesHeader := utils.LeftPaddedString("NAME", columnWidths["name"], 2)
 	genresHeader := utils.LeftPaddedString("GENRES", columnWidths["genre"], 2)
 	popularitiesHeader := utils.LeftPaddedString("POPULARITY", columnWidths["popularity"], 2)
 
-	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("ARTIST", maxX, 2))
+	fmt.Fprintf(v, "\u001b[1m%s[0m\n\n", utils.LeftPaddedString("ARTISTS", maxX, 2))
 	fmt.Fprintf(v, "\u001b[1m%s %s %s\u001b[0m\n", namesHeader, genresHeader, popularitiesHeader)
 }
 
-func (a ArtistTable) render(v *gocui.View, maxX int) {
+func (a *ArtistTable) render(v *gocui.View, maxX int) {
 	columnWidths := a.getColumnWidths(maxX)
 
 	for _, artist := range a.artists.Items {
@@ -52,18 +52,29 @@ func (a ArtistTable) render(v *gocui.View, maxX int) {
 	}
 }
 
-func (a ArtistTable) getTableLength() int {
+func (a *ArtistTable) getTableLength() int {
 	return len(a.artists.Items)
 }
 
-func (a ArtistTable) loadNextRecords() error {
+func (a *ArtistTable) loadNextRecords() error {
 	return nil
 }
 
-func (a ArtistTable) playSelected() error {
-	return nil
+func (a *ArtistTable) playSelected(selectedIndex int) error {
+	artist := a.artists.Items[selectedIndex]
+	playerOptions := api.PlayerOptions{
+		ContextURI: artist.URI,
+	}
+	return api.StartPlayback(&playerOptions)
 }
 
-func (a ArtistTable) newTableFromSelection() (Table, error) {
-	return nil, nil
+func (a *ArtistTable) newTableFromSelection(selectedIndex int) (Table, error) {
+	artist := a.artists.Items[selectedIndex]
+	albumsPaged, err := api.GetAlbumsForArtist(artist.ID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return NewAlbumTable(&albumsPaged), nil
 }
