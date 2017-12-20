@@ -20,15 +20,6 @@ type SimplePlaylist struct {
 	URI           string              `json:"uri"`
 }
 
-type SimplePlaylistsPagedWithCursor struct {
-	Href    string           `json:"href"`
-	Items   []SimplePlaylist `json:"items"`
-	Limit   int              `json:"limit"`
-	Next    string           `json:"next"`
-	Cursors *Cursor          `json:"cursors"`
-	Total   int              `json:"total"`
-}
-
 type SimplePlaylistsPaged struct {
 	Href     string           `json:"href"`
 	Items    []SimplePlaylist `json:"items"`

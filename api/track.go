@@ -56,15 +56,6 @@ type PlaylistTrack struct {
 	Track   FullTrack  `json:"track"`
 }
 
-type SimpleTracksPagedWithCursor struct {
-	Href    string        `json:"href"`
-	Items   []SimpleTrack `json:"items"`
-	Limit   int           `json:"limit"`
-	Next    string        `json:"next"`
-	Cursors *Cursor       `json:"cursors"`
-	Total   int           `json:"total"`
-}
-
 type SimpleTracksPaged struct {
 	Href     string        `json:"href"`
 	Items    []SimpleTrack `json:"items"`
@@ -73,15 +64,6 @@ type SimpleTracksPaged struct {
 	Offset   int           `json:"offset"`
 	Previous string        `json:"previous"`
 	Total    int           `json:"total"`
-}
-
-type FullTracksPagedWithCursor struct {
-	Href    string      `json:"href"`
-	Items   []FullTrack `json:"items"`
-	Limit   int         `json:"limit"`
-	Next    string      `json:"next"`
-	Cursors *Cursor     `json:"cursors"`
-	Total   int         `json:"total"`
 }
 
 type FullTracksPaged struct {
