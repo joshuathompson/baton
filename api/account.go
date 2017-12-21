@@ -69,7 +69,7 @@ func getAccessToken() string {
 	expiration := viper.GetTime("expiration_date")
 
 	if rt == "" {
-		log.Fatal("No valid token found, please run `baton auth` to properly")
+		log.Fatal("No valid token found, please run `baton auth` to authenticate")
 	}
 
 	if expiration.Before(time.Now()) {

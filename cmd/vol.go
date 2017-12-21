@@ -83,7 +83,7 @@ func getSetVolume(cmd *cobra.Command, args []string) {
 					p, err := strconv.Atoi(args[0])
 
 					if err != nil {
-						fmt.Printf("Volume number must be an integer between 0-100\n")
+						fmt.Printf("Volume must be a number between 0-100\n")
 						return
 					}
 

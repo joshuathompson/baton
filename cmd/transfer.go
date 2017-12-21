@@ -8,24 +8,26 @@ import (
 )
 
 func transferDevice(cmd *cobra.Command, args []string) {
-	devices, err := api.GetDevices()
 	p := api.PlayerOptions{DeviceID: args[0]}
-	err = api.StartPlayback(&p)
+	err := api.StartPlayback(&p)
 
 	if err != nil {
-		fmt.Printf("Failed to transfer playback\n")
-	} else {
-		deviceName := ""
-		deviceType := ""
+		fmt.Printf("Couldn't transfer playback. Is the device ID supplied correct? Is Spotify active on that device?  Have you authenticated with the 'auth' command?\n")
+		return
+	}
 
+	devices, err := api.GetDevices()
+
+	if err != nil {
+		fmt.Printf("Transferred playback successfully\n")
+	} else {
 		for _, d := range devices {
 			if d.ID == args[0] {
-				deviceName = d.Name
-				deviceType = d.Type
+				fmt.Printf("Transfered playback to %s '%s'\n", d.Type, d.Name)
+				return
 			}
 		}
-
-		fmt.Printf("Transfered playback to %s '%s'\n", deviceType, deviceName)
+		fmt.Printf("Transferred playback successfully\n")
 	}
 }
 

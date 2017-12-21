@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/joshuathompson/baton/api"
@@ -15,18 +14,18 @@ func playUri(cmd *cobra.Command, args []string) {
 		err := api.StartPlayback(&playerOptions)
 
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("Couldn't start playback. Is that URI proper? Is Spotify active on a device? Have you authenticated with the 'auth' command?\n")
+		} else {
+			fmt.Printf("Playing uri: %s\n", args[0])
 		}
-
-		fmt.Printf("Playing uri: %s\n", args[0])
 	} else {
 		err := api.StartPlayback(&playerOptions)
 
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("Couldn't start playback. Is Spotify active on a device? Have you authenticated with the 'auth' command?\n")
+		} else {
+			fmt.Printf("Resuming playback\n")
 		}
-
-		fmt.Printf("Resuming Spotify playback\n")
 	}
 }
 
@@ -34,7 +33,13 @@ func playArtist(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "artist", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
+	}
+
+	if res.Artists == nil || len(res.Artists.Items) == 0 {
+		fmt.Printf("No artists found matching search query: %s\n", args[0])
+		return
 	}
 
 	playerOptions.ContextURI = res.Artists.Items[0].URI
@@ -42,7 +47,8 @@ func playArtist(cmd *cobra.Command, args []string) {
 	err = api.StartPlayback(&playerOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't play search result.  Attempted to play top songs for artist: %s\n", res.Artists.Items[0].Name)
+		return
 	}
 
 	fmt.Printf("Playing top songs for artist: %s\n", res.Artists.Items[0].Name)
@@ -52,7 +58,13 @@ func playAlbum(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "album", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
+	}
+
+	if res.Albums == nil || len(res.Albums.Items) == 0 {
+		fmt.Printf("No albums found matching search query: %s\n", args[0])
+		return
 	}
 
 	playerOptions.ContextURI = res.Albums.Items[0].URI
@@ -60,7 +72,8 @@ func playAlbum(cmd *cobra.Command, args []string) {
 	err = api.StartPlayback(&playerOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't start playback for top matching album: %s\n", res.Albums.Items[0].Name)
+		return
 	}
 
 	var artistNames []string
@@ -76,7 +89,13 @@ func playPlaylist(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "playlist", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
+	}
+
+	if res.Playlists == nil || len(res.Playlists.Items) == 0 {
+		fmt.Printf("No playlists found matching search query: %s\n", args[0])
+		return
 	}
 
 	playerOptions.ContextURI = res.Playlists.Items[0].URI
@@ -84,7 +103,8 @@ func playPlaylist(cmd *cobra.Command, args []string) {
 	err = api.StartPlayback(&playerOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't start playback for top matching playlist: %s\n", res.Playlists.Items[0].Name)
+		return
 	}
 
 	fmt.Printf("Playing playlist: %s by user %s\n", res.Playlists.Items[0].Name, res.Playlists.Items[0].Owner.DisplayName)
@@ -94,7 +114,13 @@ func playTrack(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "track", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
+	}
+
+	if res.Tracks == nil || len(res.Tracks.Items) == 0 {
+		fmt.Printf("No tracks found matching search query: %s\n", args[0])
+		return
 	}
 
 	track := res.Tracks.Items[0]
@@ -109,10 +135,17 @@ func playTrack(cmd *cobra.Command, args []string) {
 	}
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't start playback for top matching track/album: %s - %s\n", res.Tracks.Items[0].Name, res.Tracks.Items[0].Album.Name)
+		return
 	}
 
-	fmt.Printf("Playing track: %s\n", res.Tracks.Items[0].Name)
+	var artistNames []string
+
+	for _, artist := range res.Tracks.Items[0].Artists {
+		artistNames = append(artistNames, artist.Name)
+	}
+
+	fmt.Printf("Playing '%s' by %s from album %s\n", res.Tracks.Items[0].Name, strings.Join(artistNames, ", "), res.Tracks.Items[0].Album.Name)
 }
 
 func init() {

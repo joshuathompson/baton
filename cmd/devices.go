@@ -12,7 +12,7 @@ func reportDevices(cmd *cobra.Command, args []string) {
 	devices, err := api.GetDevices()
 
 	if err != nil {
-		fmt.Println("Failed to retrieve devices")
+		fmt.Printf("Couldn't retrieve devices. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
 	} else if len(devices) > 0 {
 		var o []string
 		for _, d := range devices {

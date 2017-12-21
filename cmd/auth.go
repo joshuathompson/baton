@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -42,8 +41,10 @@ func serverManager(srv *http.Server, keepAlive chan bool) {
 		case <-keepAlive:
 			ctx := context.Background()
 
-			if err := srv.Shutdown(ctx); err != nil {
-				log.Fatal(err)
+			err := srv.Shutdown(ctx)
+
+			if err != nil {
+				fmt.Printf("Failed to shutdown temporary http server, this should have no effect on your ability to complete this process.  It's running on port 15298.")
 			}
 
 			return

@@ -13,20 +13,21 @@ func skipToNext(cmd *cobra.Command, args []string) {
 	err := api.SkipToNext(&options)
 
 	if err != nil {
-		fmt.Printf("Failed to skip to next track\n")
-	} else {
-		time.Sleep(time.Millisecond * 150)
-		ps, err := api.GetPlayerState(&options)
+		fmt.Printf("Couldn't skip to the next track. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
+		return
+	}
 
-		if err != nil {
-			fmt.Printf("Skipped to next track\n")
-		} else {
-			var artistNames []string
-			for _, artist := range ps.Item.Artists {
-				artistNames = append(artistNames, artist.Name)
-			}
-			fmt.Printf("Skipped to next track, '%s' by %s from album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
+	time.Sleep(time.Millisecond * 150)
+	ps, err := api.GetPlayerState(&options)
+
+	if err != nil {
+		fmt.Printf("Skipped to next track\n")
+	} else {
+		var artistNames []string
+		for _, artist := range ps.Item.Artists {
+			artistNames = append(artistNames, artist.Name)
 		}
+		fmt.Printf("Skipped to next track, '%s' by %s from album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
 	}
 }
 

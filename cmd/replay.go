@@ -10,10 +10,16 @@ import (
 
 func replayTrack(cmd *cobra.Command, args []string) {
 	err := api.SeekToPosition(0, &options)
+
+	if err != nil {
+		fmt.Printf("Couldn't seek to chosen position. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
+		return
+	}
+
 	ps, err := api.GetPlayerState(&options)
 
 	if err != nil {
-		fmt.Printf("Failed to restart current track\n")
+		fmt.Printf("Replaying current song\n")
 	} else {
 		var artistNames []string
 		for _, artist := range ps.Item.Artists {

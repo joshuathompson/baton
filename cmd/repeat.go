@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/joshuathompson/baton/api"
 	"github.com/joshuathompson/baton/utils"
@@ -15,7 +14,7 @@ func setRepeatMode(cmd *cobra.Command, args []string) {
 		err := api.SetRepeatMode(args[0], &options)
 
 		if err != nil {
-			fmt.Printf("Failed to set repeat mode\n")
+			fmt.Printf("Couldn't set repeat mode. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
 		} else {
 			fmt.Printf("Repeat mode set to %s\n", args[0])
 		}
@@ -23,10 +22,10 @@ func setRepeatMode(cmd *cobra.Command, args []string) {
 		ctx, err := api.GetPlayerState(&options)
 
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("Couldn't get information about the spotify player. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
+		} else {
+			fmt.Printf("Repeat mode is currently set to %s\n", ctx.RepeatState)
 		}
-
-		fmt.Printf("Repeat mode is currently set to %s\n", ctx.RepeatState)
 	}
 }
 

@@ -11,19 +11,21 @@ func toggleShuffle(cmd *cobra.Command, args []string) {
 	ctx, err := api.GetPlayerState(&options)
 
 	if err != nil {
-		fmt.Printf("Couldn't get the player state to retrieve current shuffle status")
+		fmt.Printf("Couldn't get the player state to retrieve shuffle status. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
+		return
+	}
+
+	err = api.ToggleShuffle(!ctx.ShuffleState, &options)
+
+	if err != nil {
+		fmt.Printf("Failed to toggle shuffle\n")
+		return
+	}
+
+	if ctx.ShuffleState {
+		fmt.Printf("Shuffle has been toggled off\n")
 	} else {
-		err = api.ToggleShuffle(!ctx.ShuffleState, &options)
-
-		if err != nil {
-			fmt.Printf("Failed to toggle shuffle\n")
-		}
-
-		if ctx.ShuffleState {
-			fmt.Printf("Shuffle has been toggled off\n")
-		} else {
-			fmt.Printf("Shuffle has been toggled on\n")
-		}
+		fmt.Printf("Shuffle has been toggled on\n")
 	}
 }
 

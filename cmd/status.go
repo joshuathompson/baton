@@ -13,27 +13,28 @@ func reportStatus(cmd *cobra.Command, args []string) {
 	ctx, err := api.GetPlayerState(nil)
 
 	if err != nil {
-		fmt.Printf("Couldn't find information about the current player status\n")
-	} else {
-		if ctx.Item != nil {
-			track := ctx.Item.Name
-			album := ctx.Item.Album.Name
-			var artistNames []string
+		fmt.Printf("Couldn't get the player state. Is Spotify active on a device?  Have you authenticated with the 'auth' command?\n")
+		return
+	}
 
-			for _, artist := range ctx.Item.Artists {
-				artistNames = append(artistNames, artist.Name)
-			}
+	if ctx.Item != nil {
+		track := ctx.Item.Name
+		album := ctx.Item.Album.Name
+		var artistNames []string
 
-			progress := utils.MillisecondsToFormattedTime(ctx.ProgressMs)
-			duration := utils.MillisecondsToFormattedTime(ctx.Item.DurationMs)
-
-			fmt.Printf("Track: %s\n", track)
-			fmt.Printf("Artist: %s\n", strings.Join(artistNames, ", "))
-			fmt.Printf("Album: %s\n", album)
-			fmt.Printf("Time Elapsed: %s - %s\n", progress, duration)
-		} else {
-			fmt.Printf("No currently playing track\n")
+		for _, artist := range ctx.Item.Artists {
+			artistNames = append(artistNames, artist.Name)
 		}
+
+		progress := utils.MillisecondsToFormattedTime(ctx.ProgressMs)
+		duration := utils.MillisecondsToFormattedTime(ctx.Item.DurationMs)
+
+		fmt.Printf("Track: %s\n", track)
+		fmt.Printf("Artist: %s\n", strings.Join(artistNames, ", "))
+		fmt.Printf("Album: %s\n", album)
+		fmt.Printf("Time Elapsed: %s - %s\n", progress, duration)
+	} else {
+		fmt.Printf("Couldn't find information about the current status\n")
 	}
 }
 

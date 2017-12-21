@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/joshuathompson/baton/api"
@@ -12,7 +13,8 @@ func searchForArtists(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "artist", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
 	}
 
 	at := ui.NewArtistTable(res.Artists)
@@ -28,7 +30,8 @@ func searchForPlaylists(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "playlist", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
 	}
 
 	at := ui.NewPlaylistTable(res.Playlists)
@@ -44,7 +47,8 @@ func searchForAlbums(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "album", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
 	}
 
 	at := ui.NewAlbumTable(res.Albums)
@@ -60,7 +64,8 @@ func searchForTracks(cmd *cobra.Command, args []string) {
 	res, err := api.Search(args[0], "track", &searchOptions)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		return
 	}
 
 	at := ui.NewTrackTable(res.Tracks)
