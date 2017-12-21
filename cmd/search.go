@@ -17,7 +17,11 @@ func searchForArtists(cmd *cobra.Command, args []string) {
 
 	at := ui.NewArtistTable(res.Artists)
 
-	ui.Run(at)
+	err = ui.Run(at)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func searchForPlaylists(cmd *cobra.Command, args []string) {
@@ -29,7 +33,11 @@ func searchForPlaylists(cmd *cobra.Command, args []string) {
 
 	at := ui.NewPlaylistTable(res.Playlists)
 
-	ui.Run(at)
+	err = ui.Run(at)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func searchForAlbums(cmd *cobra.Command, args []string) {
@@ -41,7 +49,11 @@ func searchForAlbums(cmd *cobra.Command, args []string) {
 
 	at := ui.NewAlbumTable(res.Albums)
 
-	ui.Run(at)
+	err = ui.Run(at)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func searchForTracks(cmd *cobra.Command, args []string) {
@@ -53,7 +65,11 @@ func searchForTracks(cmd *cobra.Command, args []string) {
 
 	at := ui.NewTrackTable(res.Tracks)
 
-	ui.Run(at)
+	err = ui.Run(at)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func init() {
@@ -66,38 +82,38 @@ func init() {
 
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "STUFF",
-	Long:  `THINGS`,
+	Short: "Search via interactive TUI",
+	Long:  `Search via interactive TUI`,
 }
 
 var searchArtistsCmd = &cobra.Command{
-	Use:   `artist "artist name"`,
+	Use:   `artists "artist name"`,
 	Short: "Search specified artists",
 	Long:  `Search specified artists`,
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Run:   searchForArtists,
 }
 
 var searchPlaylistsCmd = &cobra.Command{
-	Use:   `playlist "playlist name"`,
+	Use:   `playlists "playlist name"`,
 	Short: "Search specified playlists",
 	Long:  `Search specified playlists`,
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Run:   searchForPlaylists,
 }
 
 var searchAlbumsCmd = &cobra.Command{
-	Use:   `album "album name"`,
+	Use:   `albums "album name"`,
 	Short: "Search specified albums",
 	Long:  `Search specified albums`,
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Run:   searchForAlbums,
 }
 
 var searchTracksCmd = &cobra.Command{
-	Use:   `track "track name"`,
+	Use:   `tracks "track name"`,
 	Short: "Search specified tracks",
 	Long:  `Search specified tracks`,
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Run:   searchForTracks,
 }

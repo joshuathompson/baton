@@ -2,7 +2,11 @@ package ui
 
 import (
 	"fmt"
+	"log"
+	"strings"
+	"time"
 
+	"github.com/joshuathompson/baton/api"
 	"github.com/jroimartin/gocui"
 )
 
@@ -18,6 +22,26 @@ type Table interface {
 var currentTable Table
 var previousTables []Table
 var previousCursors []int
+var selectAndExit bool
+
+func reportResult() {
+	if selectAndExit {
+		time.Sleep(time.Millisecond * 50)
+		opts := api.Options{}
+		ps, err := api.GetPlayerState(&opts)
+
+		if err != nil {
+			log.Fatal()
+		}
+
+		var artistNames []string
+		for _, artist := range ps.Item.Artists {
+			artistNames = append(artistNames, artist.Name)
+		}
+
+		fmt.Printf("Now playing '%s' by %s from the album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
+	}
+}
 
 func quit(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
@@ -46,6 +70,19 @@ func cursorUp(g *gocui.Gui, v *gocui.View) error {
 func playSelected(g *gocui.Gui, v *gocui.View) error {
 	y := getSelectedY(v)
 	return currentTable.playSelected(y)
+}
+
+func playSelectedAndExit(g *gocui.Gui, v *gocui.View) error {
+	y := getSelectedY(v)
+	err := currentTable.playSelected(y)
+
+	if err != nil {
+		return err
+	}
+
+	selectAndExit = true
+
+	return gocui.ErrQuit
 }
 
 func pushTable(g *gocui.Gui, v *gocui.View) error {
@@ -133,7 +170,7 @@ func layout(g *gocui.Gui) error {
 		v.Frame = false
 		v.BgColor = gocui.ColorBlue
 
-		fmt.Fprintf(v, "[q] Quit [backspace] Go back [j] Down [k] Up [enter] Go forward [m] Load Additional [p] Play")
+		fmt.Fprintf(v, "[q] Quit [h] Go back [j] Down [k] Up [l] Go forward [m] Load Additional [p] Play [enter] Play and Exit")
 	}
 
 	return nil
@@ -141,12 +178,12 @@ func layout(g *gocui.Gui) error {
 
 func keybindings(g *gocui.Gui) error {
 	err := g.SetKeybinding("", 'q', gocui.ModNone, quit)
+	err = g.SetKeybinding("table", 'h', gocui.ModNone, popTable)
 	err = g.SetKeybinding("table", 'j', gocui.ModNone, cursorDown)
 	err = g.SetKeybinding("table", 'k', gocui.ModNone, cursorUp)
+	err = g.SetKeybinding("table", 'l', gocui.ModNone, pushTable)
 	err = g.SetKeybinding("table", 'p', gocui.ModNone, playSelected)
-	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, pushTable)
-	err = g.SetKeybinding("table", gocui.KeyBackspace, gocui.ModNone, popTable)
-	err = g.SetKeybinding("table", gocui.KeyBackspace2, gocui.ModNone, popTable)
+	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, playSelectedAndExit)
 	err = g.SetKeybinding("table", 'm', gocui.ModNone, loadNextRecords)
 
 	if err != nil {
@@ -158,6 +195,7 @@ func keybindings(g *gocui.Gui) error {
 
 func Run(initialTable Table) error {
 	currentTable = initialTable
+	defer reportResult()
 
 	g := gocui.NewGui()
 	g.Init()

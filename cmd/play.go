@@ -127,40 +127,40 @@ func init() {
 
 var playCmd = &cobra.Command{
 	Use:   "play [uri]",
-	Short: "Play specified artist, album, playlist, track, or uri",
-	Long:  `Play specified artist, album, playlist, track, or uri`,
+	Short: "Play top result for specified artist, album, playlist, track, or uri",
+	Long:  `Play top result for specified artist, album, playlist, track, or uri`,
 	Args:  cobra.MaximumNArgs(1),
 	Run:   playUri,
 }
 
 var playArtistCmd = &cobra.Command{
 	Use:   `artist "artist name"`,
-	Short: "Play specified artist",
-	Long:  `Play specified artist`,
+	Short: "Play top result for specified artist",
+	Long:  `Play top result for specified artist`,
 	Args:  cobra.MinimumNArgs(1),
 	Run:   playArtist,
 }
 
 var playAlbumCmd = &cobra.Command{
 	Use:   `album "album name"`,
-	Short: "Play specified album",
-	Long:  `Play specified album`,
+	Short: "Play top result for specified album",
+	Long:  `Play top result for specified album`,
 	Args:  cobra.MinimumNArgs(1),
 	Run:   playAlbum,
 }
 
 var playPlaylistCmd = &cobra.Command{
 	Use:   `playlist "playlist name"`,
-	Short: "Play specified playlist",
-	Long:  `Play specified playlist`,
+	Short: "Play top result for specified playlist",
+	Long:  `Play top result for specified playlist`,
 	Args:  cobra.MinimumNArgs(1),
 	Run:   playPlaylist,
 }
 
 var playTrackCmd = &cobra.Command{
 	Use:   `track "track name"`,
-	Short: "Play specified track",
-	Long:  `Play specified track`,
+	Short: "Play top result for specified track",
+	Long:  `Play top result for specified track`,
 	Args:  cobra.MinimumNArgs(1),
 	Run:   playTrack,
 }

@@ -24,7 +24,7 @@ func pausePlayer(cmd *cobra.Command, args []string) {
 			fmt.Printf("Spotify has been paused\n")
 		}
 	} else {
-		err = api.StartPlayback(nil)
+		err = api.StartPlayback(&playerOptions)
 
 		if err != nil {
 			fmt.Printf("Failed to unpause\n")
