@@ -59,7 +59,7 @@ func makeRequest(r *http.Request, d interface{}) error {
 	res, err := client.Do(r)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer res.Body.Close()

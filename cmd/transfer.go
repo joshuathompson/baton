@@ -8,13 +8,24 @@ import (
 )
 
 func transferDevice(cmd *cobra.Command, args []string) {
+	devices, err := api.GetDevices()
 	p := api.PlayerOptions{DeviceID: args[0]}
-	err := api.StartPlayback(&p)
+	err = api.StartPlayback(&p)
 
 	if err != nil {
-		fmt.Println("Failed to transfer playback")
+		fmt.Printf("Failed to transfer playback\n")
 	} else {
-		fmt.Println("Successfully transfered playback!")
+		deviceName := ""
+		deviceType := ""
+
+		for _, d := range devices {
+			if d.ID == args[0] {
+				deviceName = d.Name
+				deviceType = d.Type
+			}
+		}
+
+		fmt.Printf("Transfered playback to %s '%s'\n", deviceType, deviceName)
 	}
 }
 

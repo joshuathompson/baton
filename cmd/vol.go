@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/joshuathompson/baton/api"
@@ -14,29 +13,29 @@ func increaseVolume(cmd *cobra.Command, args []string) {
 	ctx, err := api.GetPlayerState(&options)
 
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if ctx.Device != nil {
-		if utils.StringInSlice(ctx.Device.Type, []string{"CastVideo", "Phone"}) {
-			fmt.Printf("Can't get/set volume for %s '%s', this type of device doesn't support volume commands in the web api beta\n", ctx.Device.Type, ctx.Device.Name)
-		} else {
-			v := ctx.Device.VolumePercent + 10
-
-			if v > 100 {
-				v = 100
-			}
-
-			err = api.SetVolume(v, &options)
-
-			if err != nil {
-				fmt.Printf("Failed to set volume\n")
-			} else {
-				fmt.Printf("Volume increased to %d%%\n", v)
-			}
-		}
+		fmt.Printf("Couldn't get the player state to retrieve current volume information\n")
 	} else {
-		fmt.Printf("No device currently playing\n")
+		if ctx.Device != nil {
+			if utils.StringInSlice(ctx.Device.Type, []string{"CastVideo", "Phone"}) {
+				fmt.Printf("Can't get/set volume for %s '%s', this type of device doesn't support volume commands in the web api beta\n", ctx.Device.Type, ctx.Device.Name)
+			} else {
+				v := ctx.Device.VolumePercent + 10
+
+				if v > 100 {
+					v = 100
+				}
+
+				err = api.SetVolume(v, &options)
+
+				if err != nil {
+					fmt.Printf("Failed to set volume\n")
+				} else {
+					fmt.Printf("Volume for %s '%s' increased to %d%%\n", ctx.Device.Type, ctx.Device.Name, v)
+				}
+			}
+		} else {
+			fmt.Printf("No device currently playing\n")
+		}
 	}
 }
 
@@ -44,29 +43,29 @@ func decreaseVolume(cmd *cobra.Command, args []string) {
 	ctx, err := api.GetPlayerState(&options)
 
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if ctx.Device != nil {
-		if utils.StringInSlice(ctx.Device.Type, []string{"CastVideo", "Phone"}) {
-			fmt.Printf("Can't get/set volume for %s '%s', this type of device doesn't support volume commands in the web api beta\n", ctx.Device.Type, ctx.Device.Name)
-		} else {
-			v := ctx.Device.VolumePercent - 10
-
-			if v < 0 {
-				v = 0
-			}
-
-			err = api.SetVolume(v, &options)
-
-			if err != nil {
-				fmt.Printf("Failed to set volume\n")
-			} else {
-				fmt.Printf("Volume decreased to %d%%.\n", v)
-			}
-		}
+		fmt.Printf("Couldn't get the player state to retrieve current volume information\n")
 	} else {
-		fmt.Printf("No device currently playing\n")
+		if ctx.Device != nil {
+			if utils.StringInSlice(ctx.Device.Type, []string{"CastVideo", "Phone"}) {
+				fmt.Printf("Can't get/set volume for %s '%s', this type of device doesn't support volume commands in the web api beta\n", ctx.Device.Type, ctx.Device.Name)
+			} else {
+				v := ctx.Device.VolumePercent - 10
+
+				if v < 0 {
+					v = 0
+				}
+
+				err = api.SetVolume(v, &options)
+
+				if err != nil {
+					fmt.Printf("Failed to set volume\n")
+				} else {
+					fmt.Printf("Volume for %s '%s' decreased to %d%%.\n", ctx.Device.Type, ctx.Device.Name, v)
+				}
+			}
+		} else {
+			fmt.Printf("No device currently playing\n")
+		}
 	}
 }
 
@@ -74,34 +73,34 @@ func getSetVolume(cmd *cobra.Command, args []string) {
 	ctx, err := api.GetPlayerState(&options)
 
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if ctx.Device != nil {
-		if utils.StringInSlice(ctx.Device.Type, []string{"CastVideo", "Phone"}) {
-			fmt.Printf("Can't get/set volume for %s '%s', this type of device doesn't support volume commands in the web api beta\n", ctx.Device.Type, ctx.Device.Name)
-		} else {
-			if len(args) > 0 {
-				p, err := strconv.Atoi(args[0])
-
-				if err != nil {
-					fmt.Printf("Volume number must be an integer between 0-100\n")
-					return
-				}
-
-				err = api.SetVolume(p, &options)
-
-				if err != nil {
-					fmt.Printf("Failed to set volume\n")
-				} else {
-					fmt.Printf("Volume changed to %s%% for %s '%s'\n", args[0], ctx.Device.Type, ctx.Device.Name)
-				}
-			} else {
-				fmt.Printf("Volume for %s %s is %d%%\n", ctx.Device.Type, ctx.Device.Name, ctx.Device.VolumePercent)
-			}
-		}
+		fmt.Printf("Couldn't get the player state to retrieve current volume information\n")
 	} else {
-		fmt.Printf("No device currently playing")
+		if ctx.Device != nil {
+			if utils.StringInSlice(ctx.Device.Type, []string{"CastVideo", "Phone"}) {
+				fmt.Printf("Can't get/set volume for %s '%s', this type of device doesn't support volume commands in the web api beta\n", ctx.Device.Type, ctx.Device.Name)
+			} else {
+				if len(args) > 0 {
+					p, err := strconv.Atoi(args[0])
+
+					if err != nil {
+						fmt.Printf("Volume number must be an integer between 0-100\n")
+						return
+					}
+
+					err = api.SetVolume(p, &options)
+
+					if err != nil {
+						fmt.Printf("Failed to set volume\n")
+					} else {
+						fmt.Printf("Volume for %s '%s' changed to %s%%\n", ctx.Device.Type, ctx.Device.Name, args[0])
+					}
+				} else {
+					fmt.Printf("Volume for %s %s is %d%%\n", ctx.Device.Type, ctx.Device.Name, ctx.Device.VolumePercent)
+				}
+			}
+		} else {
+			fmt.Printf("No device currently playing")
+		}
 	}
 }
 

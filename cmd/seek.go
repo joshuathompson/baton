@@ -12,14 +12,14 @@ func seekToPosition(cmd *cobra.Command, args []string) {
 	pos, err := strconv.Atoi(args[0])
 
 	if err != nil {
-		fmt.Printf("Time specified could not be converted to seconds")
+		fmt.Printf("Time specified could not be converted to seconds\n")
 		return
 	}
 
-	err = api.SeekToPosition(pos * 1000, &options)
+	err = api.SeekToPosition(pos*1000, &options)
 
 	if err != nil {
-		fmt.Printf("Failed to restart current track\n")
+		fmt.Printf("Failed to skip to entered position\n")
 	} else {
 		fmt.Printf("Skipping to %d seconds\n", pos)
 	}

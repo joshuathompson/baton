@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -27,20 +26,20 @@ var itemChosen bool
 func printNowPlaying() {
 	if itemChosen {
 		//sleep for a brief moment while song changes
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Millisecond * 150)
 		opts := api.Options{}
 		ps, err := api.GetPlayerState(&opts)
 
 		if err != nil {
-			log.Fatal()
-		}
+			fmt.Printf("Playing selected song\n")
+		} else {
+			var artistNames []string
+			for _, artist := range ps.Item.Artists {
+				artistNames = append(artistNames, artist.Name)
+			}
 
-		var artistNames []string
-		for _, artist := range ps.Item.Artists {
-			artistNames = append(artistNames, artist.Name)
+			fmt.Printf("Now playing '%s' by %s from the album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
 		}
-
-		fmt.Printf("Now playing '%s' by %s from the album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
 	}
 }
 
