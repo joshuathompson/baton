@@ -22,10 +22,11 @@ type Table interface {
 var currentTable Table
 var previousTables []Table
 var previousCursors []int
-var selectAndExit bool
+var itemChosen bool
 
-func reportResult() {
-	if selectAndExit {
+func printNowPlaying() {
+	if itemChosen {
+		//sleep for a brief moment while song changes
 		time.Sleep(time.Millisecond * 50)
 		opts := api.Options{}
 		ps, err := api.GetPlayerState(&opts)
@@ -80,7 +81,7 @@ func playSelectedAndExit(g *gocui.Gui, v *gocui.View) error {
 		return err
 	}
 
-	selectAndExit = true
+	itemChosen = true
 
 	return gocui.ErrQuit
 }
@@ -195,7 +196,7 @@ func keybindings(g *gocui.Gui) error {
 
 func Run(initialTable Table) error {
 	currentTable = initialTable
-	defer reportResult()
+	defer printNowPlaying()
 
 	g := gocui.NewGui()
 	g.Init()
