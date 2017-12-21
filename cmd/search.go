@@ -92,7 +92,7 @@ var searchCmd = &cobra.Command{
 }
 
 var searchArtistsCmd = &cobra.Command{
-	Use:   `artists "artist name"`,
+	Use:   `artist "artist name"`,
 	Short: "Search specified artists",
 	Long:  `Search specified artists`,
 	Args:  cobra.ExactArgs(1),
@@ -100,7 +100,7 @@ var searchArtistsCmd = &cobra.Command{
 }
 
 var searchPlaylistsCmd = &cobra.Command{
-	Use:   `playlists "playlist name"`,
+	Use:   `playlist "playlist name"`,
 	Short: "Search specified playlists",
 	Long:  `Search specified playlists`,
 	Args:  cobra.ExactArgs(1),
@@ -108,7 +108,7 @@ var searchPlaylistsCmd = &cobra.Command{
 }
 
 var searchAlbumsCmd = &cobra.Command{
-	Use:   `albums "album name"`,
+	Use:   `album "album name"`,
 	Short: "Search specified albums",
 	Long:  `Search specified albums`,
 	Args:  cobra.ExactArgs(1),
@@ -116,7 +116,7 @@ var searchAlbumsCmd = &cobra.Command{
 }
 
 var searchTracksCmd = &cobra.Command{
-	Use:   `tracks "track name"`,
+	Use:   `track "track name"`,
 	Short: "Search specified tracks",
 	Long:  `Search specified tracks`,
 	Args:  cobra.ExactArgs(1),
