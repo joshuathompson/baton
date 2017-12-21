@@ -1,2 +1,2 @@
 # Baton
-![alt text](https://github.com/joshuathompson/baton/example.gif "Example usage gif")
+![alt text](https://github.com/joshuathompson/baton/blob/master/example.gif "Example usage gif")
