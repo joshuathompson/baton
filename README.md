@@ -9,6 +9,8 @@ Fetch the release for your platform [from the following page](https://github.com
 ## Setup
 Use the `baton auth` command to perform an initial setup.  The command will take you through the process but you will need to login to the [Spotify API dashboard](https://beta.developer.spotify.com/dashboard/login), create an app, and set it up with a redirect URL of http://localhost:15298/callback.
 
+This process will generate a long-lasting refresh token and ideally will never have to be repeated.
+
 ## Usage
 
 ### CLI Commands
