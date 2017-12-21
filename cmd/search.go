@@ -87,8 +87,8 @@ func init() {
 
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "Search via interactive TUI",
-	Long:  `Search via interactive TUI`,
+	Short: "Search for specified artist, album, playlist, or track and select via interactive TUI",
+	Long:  `Search for specified artist, album, playlist, or track and select via interactive TUI`,
 }
 
 var searchArtistsCmd = &cobra.Command{

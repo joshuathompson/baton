@@ -31,7 +31,7 @@ func printNowPlaying() {
 		ps, err := api.GetPlayerState(&opts)
 
 		if err != nil {
-			fmt.Printf("Playing selected song\n")
+			fmt.Printf("Playing selection\n")
 		} else {
 			var artistNames []string
 			for _, artist := range ps.Item.Artists {

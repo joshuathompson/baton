@@ -81,7 +81,7 @@ func authenticate(cmd *cobra.Command, args []string) {
 	id, secret := getClientCredentials()
 	code := getCode(id)
 	api.AuthorizeWithCode(id, secret, code)
-	fmt.Println("\nAuthentication successful!")
+	fmt.Println("\nAuthentication successful, setup complete, you should be able to run other commands now!")
 }
 
 func init() {

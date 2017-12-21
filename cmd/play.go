@@ -22,7 +22,7 @@ func playUri(cmd *cobra.Command, args []string) {
 		err := api.StartPlayback(&playerOptions)
 
 		if err != nil {
-			fmt.Printf("Couldn't start playback. Is Spotify active on a device? Have you authenticated with the 'auth' command?\n")
+			fmt.Printf("Couldn't start playback. Is Spotify already playing? Is Spotify active on a device? Have you authenticated with the 'auth' command?\n")
 		} else {
 			fmt.Printf("Resuming playback\n")
 		}
