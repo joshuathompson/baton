@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
-	"time"
 
 	"github.com/joshuathompson/baton/api"
 	"github.com/spf13/cobra"
@@ -17,18 +15,7 @@ func skipToPrev(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	time.Sleep(time.Millisecond * 150)
-	ps, err := api.GetPlayerState(&options)
-
-	if err != nil {
-		fmt.Printf("Skipped to previous track\n")
-	} else {
-		var artistNames []string
-		for _, artist := range ps.Item.Artists {
-			artistNames = append(artistNames, artist.Name)
-		}
-		fmt.Printf("Skipped to previous track, '%s' by %s from album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
-	}
+	fmt.Printf("Skipped to previous track\n")
 }
 
 func init() {
