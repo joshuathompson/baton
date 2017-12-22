@@ -30,7 +30,8 @@ func playUri(cmd *cobra.Command, args []string) {
 }
 
 func playArtist(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "artist", &searchOptions)
+	searchQuery := strings.Join(args, " ")
+	res, err := api.Search(searchQuery, "artist", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -38,7 +39,7 @@ func playArtist(cmd *cobra.Command, args []string) {
 	}
 
 	if res.Artists == nil || len(res.Artists.Items) == 0 {
-		fmt.Printf("No artists found matching search query: %s\n", args[0])
+		fmt.Printf("No artists found matching search query: %s\n", searchQuery)
 		return
 	}
 
@@ -55,7 +56,8 @@ func playArtist(cmd *cobra.Command, args []string) {
 }
 
 func playAlbum(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "album", &searchOptions)
+	searchQuery := strings.Join(args, " ")
+	res, err := api.Search(searchQuery, "album", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -63,7 +65,7 @@ func playAlbum(cmd *cobra.Command, args []string) {
 	}
 
 	if res.Albums == nil || len(res.Albums.Items) == 0 {
-		fmt.Printf("No albums found matching search query: %s\n", args[0])
+		fmt.Printf("No albums found matching search query: %s\n", searchQuery)
 		return
 	}
 
@@ -86,7 +88,8 @@ func playAlbum(cmd *cobra.Command, args []string) {
 }
 
 func playPlaylist(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "playlist", &searchOptions)
+	searchQuery := strings.Join(args, " ")
+	res, err := api.Search(searchQuery, "playlist", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -94,7 +97,7 @@ func playPlaylist(cmd *cobra.Command, args []string) {
 	}
 
 	if res.Playlists == nil || len(res.Playlists.Items) == 0 {
-		fmt.Printf("No playlists found matching search query: %s\n", args[0])
+		fmt.Printf("No playlists found matching search query: %s\n", searchQuery)
 		return
 	}
 
@@ -111,7 +114,8 @@ func playPlaylist(cmd *cobra.Command, args []string) {
 }
 
 func playTrack(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "track", &searchOptions)
+	searchQuery := strings.Join(args, " ")
+	res, err := api.Search(searchQuery, "track", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -119,7 +123,7 @@ func playTrack(cmd *cobra.Command, args []string) {
 	}
 
 	if res.Tracks == nil || len(res.Tracks.Items) == 0 {
-		fmt.Printf("No tracks found matching search query: %s\n", args[0])
+		fmt.Printf("No tracks found matching search query: %s\n", searchQuery)
 		return
 	}
 

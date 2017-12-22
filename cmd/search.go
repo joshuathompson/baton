@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/joshuathompson/baton/api"
 	"github.com/joshuathompson/baton/ui"
@@ -10,7 +11,7 @@ import (
 )
 
 func searchForArtists(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "artist", &searchOptions)
+	res, err := api.Search(strings.Join(args, " "), "artist", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -27,7 +28,7 @@ func searchForArtists(cmd *cobra.Command, args []string) {
 }
 
 func searchForPlaylists(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "playlist", &searchOptions)
+	res, err := api.Search(strings.Join(args, " "), "playlist", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -44,7 +45,7 @@ func searchForPlaylists(cmd *cobra.Command, args []string) {
 }
 
 func searchForAlbums(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "album", &searchOptions)
+	res, err := api.Search(strings.Join(args, " "), "album", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -61,7 +62,7 @@ func searchForAlbums(cmd *cobra.Command, args []string) {
 }
 
 func searchForTracks(cmd *cobra.Command, args []string) {
-	res, err := api.Search(args[0], "track", &searchOptions)
+	res, err := api.Search(strings.Join(args, " "), "track", &searchOptions)
 
 	if err != nil {
 		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
@@ -95,7 +96,7 @@ var searchArtistsCmd = &cobra.Command{
 	Use:   `artist "artist name"`,
 	Short: "Search specified artists",
 	Long:  `Search specified artists`,
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run:   searchForArtists,
 }
 
@@ -103,7 +104,7 @@ var searchPlaylistsCmd = &cobra.Command{
 	Use:   `playlist "playlist name"`,
 	Short: "Search specified playlists",
 	Long:  `Search specified playlists`,
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run:   searchForPlaylists,
 }
 
@@ -111,7 +112,7 @@ var searchAlbumsCmd = &cobra.Command{
 	Use:   `album "album name"`,
 	Short: "Search specified albums",
 	Long:  `Search specified albums`,
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run:   searchForAlbums,
 }
 
@@ -119,6 +120,6 @@ var searchTracksCmd = &cobra.Command{
 	Use:   `track "track name"`,
 	Short: "Search specified tracks",
 	Long:  `Search specified tracks`,
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run:   searchForTracks,
 }
