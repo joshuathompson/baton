@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joshuathompson/baton/api"
 	"github.com/spf13/cobra"
@@ -26,11 +27,11 @@ func getClientCredentials() (id, secret string) {
 
 	fmt.Print("Enter Client Id: ")
 	scanner.Scan()
-	id = scanner.Text()
+	id = strings.TrimSpace(scanner.Text())
 
 	fmt.Print("Enter Client Secret: ")
 	scanner.Scan()
-	secret = scanner.Text()
+	secret = strings.TrimSpace(scanner.Text())
 
 	return id, secret
 }
@@ -72,7 +73,7 @@ func getCode(id string) (c string) {
 	fmt.Print("\nEnter Code: ")
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	c = scanner.Text()
+	c = strings.TrimSpace(scanner.Text())
 
 	return c
 }
