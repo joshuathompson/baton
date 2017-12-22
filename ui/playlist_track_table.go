@@ -89,7 +89,7 @@ func (t *PlaylistTrackTable) loadNextRecords() error {
 	return nil
 }
 
-func (t *PlaylistTrackTable) playSelected(selectedIndex int) error {
+func (t *PlaylistTrackTable) playSelected(selectedIndex int) (string, error) {
 	item := t.data.Items[selectedIndex]
 	playerOptions := api.PlayerOptions{
 		ContextURI: t.playlist.URI,
@@ -97,7 +97,16 @@ func (t *PlaylistTrackTable) playSelected(selectedIndex int) error {
 			URI: item.Track.URI,
 		},
 	}
-	return api.StartPlayback(&playerOptions)
+
+	var artistNames []string
+
+	for _, artist := range item.Track.Artists {
+		artistNames = append(artistNames, artist.Name)
+	}
+
+	chosenItem := fmt.Sprintf("Now playing: '%s' by %s from the playlist %s\n", item.Track.Name, strings.Join(artistNames, ", "), t.playlist.Name)
+
+	return chosenItem, api.StartPlayback(&playerOptions)
 }
 
 func (t *PlaylistTrackTable) newTableFromSelection(selectedIndex int) (Table, error) {

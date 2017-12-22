@@ -79,12 +79,15 @@ func (a *ArtistTable) loadNextRecords() error {
 	return nil
 }
 
-func (a *ArtistTable) playSelected(selectedIndex int) error {
+func (a *ArtistTable) playSelected(selectedIndex int) (string, error) {
 	artist := a.artists.Items[selectedIndex]
 	playerOptions := api.PlayerOptions{
 		ContextURI: artist.URI,
 	}
-	return api.StartPlayback(&playerOptions)
+
+	chosenItem := fmt.Sprintf("Now playing top songs from artist: %s\n", artist.Name)
+
+	return chosenItem, api.StartPlayback(&playerOptions)
 }
 
 func (a *ArtistTable) newTableFromSelection(selectedIndex int) (Table, error) {

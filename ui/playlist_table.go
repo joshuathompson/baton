@@ -82,12 +82,15 @@ func (p *PlaylistTable) loadNextRecords() error {
 	return nil
 }
 
-func (p *PlaylistTable) playSelected(selectedIndex int) error {
+func (p *PlaylistTable) playSelected(selectedIndex int) (string, error) {
 	playlist := p.playlists.Items[selectedIndex]
 	playerOptions := api.PlayerOptions{
 		ContextURI: playlist.URI,
 	}
-	return api.StartPlayback(&playerOptions)
+
+	chosenItem := fmt.Sprintf("Now playing the playlist: %s by %s\n", playlist.Name, playlist.Owner.DisplayName)
+
+	return chosenItem, api.StartPlayback(&playerOptions)
 }
 
 func (p *PlaylistTable) newTableFromSelection(selectedIndex int) (Table, error) {

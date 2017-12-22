@@ -93,12 +93,21 @@ func (a *AlbumTable) loadNextRecords() error {
 	return nil
 }
 
-func (a *AlbumTable) playSelected(selectedIndex int) error {
+func (a *AlbumTable) playSelected(selectedIndex int) (string, error) {
 	album := a.albums.Items[selectedIndex]
 	playerOptions := api.PlayerOptions{
 		ContextURI: album.URI,
 	}
-	return api.StartPlayback(&playerOptions)
+
+	var artistNames []string
+
+	for _, artist := range album.Artists {
+		artistNames = append(artistNames, artist.Name)
+	}
+
+	chosenItem := fmt.Sprintf("Now playing the album: %s by %s\n", album.Name, strings.Join(artistNames, ", "))
+
+	return chosenItem, api.StartPlayback(&playerOptions)
 }
 
 func (a *AlbumTable) newTableFromSelection(selectedIndex int) (Table, error) {

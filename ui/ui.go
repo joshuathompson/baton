@@ -2,10 +2,7 @@ package ui
 
 import (
 	"fmt"
-	"strings"
-	"time"
 
-	"github.com/joshuathompson/baton/api"
 	"github.com/jroimartin/gocui"
 )
 
@@ -14,32 +11,18 @@ type Table interface {
 	renderHeader(v *gocui.View, maxX int)
 	getTableLength() int
 	loadNextRecords() error
-	playSelected(selectedIndex int) error
+	playSelected(selectedIndex int) (string, error)
 	newTableFromSelection(selectedIndex int) (Table, error)
 }
 
 var currentTable Table
 var previousTables []Table
 var previousCursors []int
-var itemChosen bool
+var chosenItem string
 
 func printNowPlaying() {
-	if itemChosen {
-		//sleep for a brief moment while song changes
-		time.Sleep(time.Millisecond * 150)
-		opts := api.Options{}
-		ps, err := api.GetPlayerState(&opts)
-
-		if err != nil {
-			fmt.Printf("Playing selection\n")
-		} else {
-			var artistNames []string
-			for _, artist := range ps.Item.Artists {
-				artistNames = append(artistNames, artist.Name)
-			}
-
-			fmt.Printf("Now playing '%s' by %s from the album %s\n", ps.Item.Name, strings.Join(artistNames, ", "), ps.Item.Album.Name)
-		}
+	if chosenItem != "" {
+		fmt.Printf("%s", chosenItem)
 	}
 }
 
@@ -69,18 +52,19 @@ func cursorUp(g *gocui.Gui, v *gocui.View) error {
 
 func playSelected(g *gocui.Gui, v *gocui.View) error {
 	y := getSelectedY(v)
-	return currentTable.playSelected(y)
+	_, err := currentTable.playSelected(y)
+	return err
 }
 
 func playSelectedAndExit(g *gocui.Gui, v *gocui.View) error {
 	y := getSelectedY(v)
-	err := currentTable.playSelected(y)
+	selected, err := currentTable.playSelected(y)
 
 	if err != nil {
 		return err
 	}
 
-	itemChosen = true
+	chosenItem = selected
 
 	return gocui.ErrQuit
 }
