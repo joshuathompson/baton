@@ -18,6 +18,7 @@ type Table interface {
 var currentTable Table
 var previousTables []Table
 var previousCursors []int
+var previousOrigins []int
 var chosenItem string
 
 func printNowPlaying() {
@@ -78,10 +79,14 @@ func pushTable(g *gocui.Gui, v *gocui.View) error {
 	}
 
 	if nt != nil {
-		previousCursors = append(previousCursors, y)
+		_, cy := v.Cursor()
+		_, oy := v.Origin()
+		previousCursors = append(previousCursors, cy)
+		previousOrigins = append(previousOrigins, oy)
 		previousTables = append(previousTables, currentTable)
 		currentTable = nt
 		v.SetCursor(0, 0)
+		v.SetOrigin(0, 0)
 	}
 	return nil
 }
@@ -89,12 +94,15 @@ func pushTable(g *gocui.Gui, v *gocui.View) error {
 func popTable(g *gocui.Gui, v *gocui.View) error {
 	if len(previousTables) > 0 {
 		lastIndex := previousCursors[len(previousCursors)-1]
+		lastOrigin := previousOrigins[len(previousOrigins)-1]
 		currentTable = previousTables[len(previousTables)-1]
 
 		previousCursors = previousCursors[:len(previousCursors)-1]
+		previousOrigins = previousOrigins[:len(previousOrigins)-1]
 		previousTables = previousTables[:len(previousTables)-1]
 
 		err := v.SetCursor(0, lastIndex)
+		err = v.SetOrigin(0, lastOrigin)
 
 		if err != nil {
 			return err
