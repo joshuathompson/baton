@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// WARNING: tricky code just for testing purposes, do not use as example.
+// WARNING: tricky code just for testing purposes, do not use as reference.
 
 package main
 
@@ -34,7 +34,7 @@ func layout(g *gocui.Gui) error {
 		}
 		v.Editable = true
 		v.Wrap = true
-		if err := g.SetCurrentView("main"); err != nil {
+		if _, err := g.SetCurrentView("main"); err != nil {
 			return err
 		}
 	}
@@ -42,21 +42,22 @@ func layout(g *gocui.Gui) error {
 }
 
 func main() {
-	g := gocui.NewGui()
-	if err := g.Init(); err != nil {
+	g, err := gocui.NewGui(gocui.OutputNormal)
+	if err != nil {
 		log.Panicln(err)
 	}
 
-	g.SetLayout(layout)
+	g.Cursor = true
+	g.Mouse = true
+
+	g.SetManagerFunc(layout)
+
 	if err := g.SetKeybinding("main", gocui.KeyCtrlC, gocui.ModNone, quit); err != nil {
 		log.Panicln(err)
 	}
-	g.SetLayout(layout)
 	if err := g.SetKeybinding("main", gocui.KeyCtrlI, gocui.ModNone, overwrite); err != nil {
 		log.Panicln(err)
 	}
-	g.Cursor = true
-	g.Mouse = true
 
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Panicln(err)

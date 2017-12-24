@@ -15,17 +15,19 @@ import (
 )
 
 func main() {
-	g := gocui.NewGui()
-	if err := g.Init(); err != nil {
+	g, err := gocui.NewGui(gocui.OutputNormal)
+	if err != nil {
 		log.Fatalln(err)
 	}
 	defer g.Close()
 
-	g.SetLayout(layout)
+	g.Cursor = true
+
+	g.SetManagerFunc(layout)
+
 	if err := initKeybindings(g); err != nil {
 		log.Fatalln(err)
 	}
-	g.Cursor = true
 
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Fatalln(err)
@@ -35,13 +37,13 @@ func main() {
 func layout(g *gocui.Gui) error {
 	maxX, _ := g.Size()
 
-	if v, err := g.SetView("legend", maxX-23, 0, maxX-1, 5); err != nil {
+	if v, err := g.SetView("help", maxX-23, 0, maxX-1, 5); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
 		fmt.Fprintln(v, "KEYBINDINGS")
 		fmt.Fprintln(v, "↑ ↓: Seek input")
-		fmt.Fprintln(v, "A: Enable autoscroll")
+		fmt.Fprintln(v, "a: Enable autoscroll")
 		fmt.Fprintln(v, "^C: Exit")
 	}
 
@@ -49,7 +51,7 @@ func layout(g *gocui.Gui) error {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
-		if err := g.SetCurrentView("stdin"); err != nil {
+		if _, err := g.SetCurrentView("stdin"); err != nil {
 			return err
 		}
 		dumper := hex.Dumper(v)

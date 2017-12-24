@@ -9,17 +9,20 @@ import (
 type Table interface {
 	render(v *gocui.View, maxX int)
 	renderHeader(v *gocui.View, maxX int)
+	renderFooter(v *gocui.View, maxX int)
 	getTableLength() int
 	loadNextRecords() error
 	playSelected(selectedIndex int) (string, error)
 	newTableFromSelection(selectedIndex int) (Table, error)
 }
 
-var currentTable Table
-var previousTables []Table
-var previousCursors []int
-var previousOrigins []int
-var chosenItem string
+var (
+	currentTable    Table
+	previousTables  []Table
+	previousCursors []int
+	previousOrigins []int
+	chosenItem      string
+)
 
 func printNowPlaying() {
 	if chosenItem != "" {
@@ -130,7 +133,7 @@ func layout(g *gocui.Gui) error {
 	v.Clear()
 	currentTable.renderHeader(v, maxX)
 
-	v, err = g.SetView("table", -1, 2, maxX, maxY-1)
+	v, err = g.SetView("table", -1, 1, maxX, maxY-2)
 
 	if err != nil {
 		if err != gocui.ErrUnknownView {
@@ -142,7 +145,7 @@ func layout(g *gocui.Gui) error {
 		v.SelBgColor = gocui.ColorWhite
 		v.SelFgColor = gocui.ColorBlack
 
-		err = g.SetCurrentView("table")
+		_, err = g.SetCurrentView("table")
 
 		if err != nil {
 			return err
@@ -152,7 +155,20 @@ func layout(g *gocui.Gui) error {
 	v.Clear()
 	currentTable.render(v, maxX)
 
-	v, err = g.SetView("statusbar", -1, maxY-2, maxX, maxY)
+	v, err = g.SetView("footer", -1, maxY-3, maxX, maxY)
+
+	if err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+
+		v.Frame = false
+	}
+
+	v.Clear()
+	currentTable.renderFooter(v, maxX)
+
+	v, err = g.SetView("instructions", -1, maxY-2, maxX, maxY)
 
 	if err != nil {
 		if err != gocui.ErrUnknownView {
@@ -171,9 +187,13 @@ func layout(g *gocui.Gui) error {
 func keybindings(g *gocui.Gui) error {
 	err := g.SetKeybinding("", 'q', gocui.ModNone, quit)
 	err = g.SetKeybinding("table", 'h', gocui.ModNone, popTable)
+	err = g.SetKeybinding("table", gocui.KeyArrowLeft, gocui.ModNone, popTable)
 	err = g.SetKeybinding("table", 'j', gocui.ModNone, cursorDown)
+	err = g.SetKeybinding("table", gocui.KeyArrowDown, gocui.ModNone, cursorDown)
 	err = g.SetKeybinding("table", 'k', gocui.ModNone, cursorUp)
+	err = g.SetKeybinding("table", gocui.KeyArrowUp, gocui.ModNone, cursorUp)
 	err = g.SetKeybinding("table", 'l', gocui.ModNone, pushTable)
+	err = g.SetKeybinding("table", gocui.KeyArrowRight, gocui.ModNone, pushTable)
 	err = g.SetKeybinding("table", 'p', gocui.ModNone, playSelected)
 	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, playSelectedAndExit)
 	err = g.SetKeybinding("table", 'm', gocui.ModNone, loadNextRecords)
@@ -185,17 +205,22 @@ func keybindings(g *gocui.Gui) error {
 	return nil
 }
 
+
 func Run(initialTable Table) error {
 	currentTable = initialTable
 	defer printNowPlaying()
 
-	g := gocui.NewGui()
-	g.Init()
+	g, err := gocui.NewGui(gocui.OutputNormal)
+
+	if err != nil {
+		return err
+	}
+
 	defer g.Close()
 
-	g.SetLayout(layout)
+	g.SetManagerFunc(layout)
 
-	err := keybindings(g)
+	err = keybindings(g)
 
 	if err != nil {
 		return err

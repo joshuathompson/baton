@@ -26,10 +26,10 @@
   version = "v1.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/jroimartin/gocui"
   packages = ["."]
-  revision = "4e9ce9a8e26f2ef33dfe297dbdfca148733b6b9b"
-  version = "v0.3.0"
+  revision = "4f518eddb04b8f73870836b6d1941e8aa3c06637"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -107,7 +107,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "d818ba11af4465e00c1998bd3f8a55603b422290"
+  revision = "83801418e1b59fb1880e363299581ee543af32ca"
 
 [[projects]]
   branch = "master"
@@ -124,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "899b906113446d7a47eb9605789d4910470ca0a5fe89c87e33726d02eb863637"
+  inputs-digest = "c6d62170776c23c125b51f76cf06f333680d5936a0f99fc8c607998b3c41507c"
   solver-name = "gps-cdcl"
   solver-version = 1

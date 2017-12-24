@@ -42,11 +42,7 @@ func (t *SimpleTrackTable) renderHeader(v *gocui.View, maxX int) {
 	albumHeader := utils.LeftPaddedString("ALBUM", columnWidths["album"], 2)
 	lengthHeader := utils.LeftPaddedString("LENGTH", columnWidths["length"], 2)
 
-	loadedLength := maxX / 3
-	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d tracks", len(t.tracks.Items), t.tracks.Total), loadedLength, 2)
-	titleLength := maxX - loadedLength
-
-	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("TRACKS", titleLength, 2), loadedHeader)
+	fmt.Fprintf(v, "\u001b[1m%s[0m\n", utils.LeftPaddedString("TRACKS", maxX, 2))
 	fmt.Fprintf(v, "\u001b[1m%s %s %s %s %s\u001b[0m\n", trackNumberHeader, namesHeader, artistHeader, albumHeader, lengthHeader)
 }
 
@@ -66,6 +62,10 @@ func (t *SimpleTrackTable) render(v *gocui.View, maxX int) {
 
 		fmt.Fprintf(v, "\n%s %s %s %s %s", trackNumber, name, artists, album, length)
 	}
+}
+
+func (t *SimpleTrackTable) renderFooter(v *gocui.View, maxX int) {
+	fmt.Fprintf(v, "\u001b[1m%s\u001b[0m\n", utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d tracks", len(t.tracks.Items), t.tracks.Total), maxX, 2))
 }
 
 func (t *SimpleTrackTable) getTableLength() int {

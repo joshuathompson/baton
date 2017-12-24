@@ -16,7 +16,7 @@ import (
 const NumGoroutines = 10
 
 var (
-	done = make(chan bool)
+	done = make(chan struct{})
 	wg   sync.WaitGroup
 
 	mu  sync.Mutex // protects ctr
@@ -24,13 +24,14 @@ var (
 )
 
 func main() {
-	g := gocui.NewGui()
-	if err := g.Init(); err != nil {
+	g, err := gocui.NewGui(gocui.OutputNormal)
+	if err != nil {
 		log.Panicln(err)
 	}
 	defer g.Close()
 
-	g.SetLayout(layout)
+	g.SetManagerFunc(layout)
+
 	if err := keybindings(g); err != nil {
 		log.Panicln(err)
 	}
@@ -65,9 +66,7 @@ func keybindings(g *gocui.Gui) error {
 }
 
 func quit(g *gocui.Gui, v *gocui.View) error {
-	for i := 0; i < NumGoroutines; i++ {
-		done <- true
-	}
+	close(done)
 	return gocui.ErrQuit
 }
 
@@ -84,7 +83,7 @@ func counter(g *gocui.Gui) {
 			ctr++
 			mu.Unlock()
 
-			g.Execute(func(g *gocui.Gui) error {
+			g.Update(func(g *gocui.Gui) error {
 				v, err := g.View("ctr")
 				if err != nil {
 					return err

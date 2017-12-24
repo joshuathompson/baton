@@ -36,11 +36,7 @@ func (a *ArtistTable) renderHeader(v *gocui.View, maxX int) {
 	genresHeader := utils.LeftPaddedString("GENRES", columnWidths["genre"], 2)
 	popularitiesHeader := utils.LeftPaddedString("POPULARITY", columnWidths["popularity"], 2)
 
-	loadedLength := maxX / 3
-	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d artists", len(a.artists.Items), a.artists.Total), loadedLength, 2)
-	titleLength := maxX - loadedLength
-
-	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("ARTISTS", titleLength, 2), loadedHeader)
+	fmt.Fprintf(v, "\u001b[1m%s[0m\n", utils.LeftPaddedString("ARTISTS", maxX, 2))
 	fmt.Fprintf(v, "\u001b[1m%s %s %s\u001b[0m\n", namesHeader, genresHeader, popularitiesHeader)
 }
 
@@ -54,6 +50,10 @@ func (a *ArtistTable) render(v *gocui.View, maxX int) {
 
 		fmt.Fprintf(v, "\n%s %s %s", name, genre, popularity)
 	}
+}
+
+func (a *ArtistTable) renderFooter(v *gocui.View, maxX int) {
+	fmt.Fprintf(v, "\u001b[1m%s\u001b[0m\n", utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d artists", len(a.artists.Items), a.artists.Total), maxX, 2))
 }
 
 func (a *ArtistTable) getTableLength() int {

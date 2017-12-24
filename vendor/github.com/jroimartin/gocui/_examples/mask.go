@@ -12,17 +12,19 @@ import (
 )
 
 func main() {
-	g := gocui.NewGui()
-	if err := g.Init(); err != nil {
+	g, err := gocui.NewGui(gocui.OutputNormal)
+	if err != nil {
 		log.Fatalln(err)
 	}
 	defer g.Close()
 
-	g.SetLayout(layout)
+	g.Cursor = true
+
+	g.SetManagerFunc(layout)
+
 	if err := initKeybindings(g); err != nil {
 		log.Fatalln(err)
 	}
-	g.Cursor = true
 
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Fatalln(err)
@@ -32,7 +34,7 @@ func main() {
 func layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
-	if v, err := g.SetView("legend", maxX-23, 0, maxX-1, 3); err != nil {
+	if v, err := g.SetView("help", maxX-23, 0, maxX-1, 3); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -45,7 +47,7 @@ func layout(g *gocui.Gui) error {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
-		if err := g.SetCurrentView("input"); err != nil {
+		if _, err := g.SetCurrentView("input"); err != nil {
 			return err
 		}
 		v.Editable = true

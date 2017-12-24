@@ -41,6 +41,11 @@ type View struct {
 	// buffer at the cursor position.
 	Editable bool
 
+	// Editor allows to define the editor that manages the edition mode,
+	// including keybindings or cursor behaviour. DefaultEditor is used by
+	// default.
+	Editor Editor
+
 	// Overwrite enables or disables the overwrite mode of the view.
 	Overwrite bool
 
@@ -90,7 +95,7 @@ func (l lineType) String() string {
 }
 
 // newView returns a new View object.
-func newView(name string, x0, y0, x1, y1 int) *View {
+func newView(name string, x0, y0, x1, y1 int, mode OutputMode) *View {
 	v := &View{
 		name:    name,
 		x0:      x0,
@@ -98,8 +103,9 @@ func newView(name string, x0, y0, x1, y1 int) *View {
 		x1:      x1,
 		y1:      y1,
 		Frame:   true,
+		Editor:  DefaultEditor,
 		tainted: true,
-		ei:      newEscapeInterpreter(),
+		ei:      newEscapeInterpreter(mode),
 	}
 	return v
 }
@@ -292,22 +298,19 @@ func (v *View) draw() error {
 		v.viewLines = nil
 		for i, line := range v.lines {
 			if v.Wrap {
-				if len(line) <= maxX {
+				if len(line) < maxX {
 					vline := viewLine{linesX: 0, linesY: i, line: line}
 					v.viewLines = append(v.viewLines, vline)
 					continue
 				} else {
-					vline := viewLine{linesX: 0, linesY: i, line: line[:maxX]}
-					v.viewLines = append(v.viewLines, vline)
-				}
-				// Append remaining lines
-				for n := maxX; n < len(line); n += maxX {
-					if len(line[n:]) <= maxX {
-						vline := viewLine{linesX: n, linesY: i, line: line[n:]}
-						v.viewLines = append(v.viewLines, vline)
-					} else {
-						vline := viewLine{linesX: n, linesY: i, line: line[n : n+maxX]}
-						v.viewLines = append(v.viewLines, vline)
+					for n := 0; n <= len(line); n += maxX {
+						if len(line[n:]) <= maxX {
+							vline := viewLine{linesX: n, linesY: i, line: line[n:]}
+							v.viewLines = append(v.viewLines, vline)
+						} else {
+							vline := viewLine{linesX: n, linesY: i, line: line[n : n+maxX]}
+							v.viewLines = append(v.viewLines, vline)
+						}
 					}
 				}
 			} else {
@@ -389,6 +392,8 @@ func (v *View) Clear() {
 	v.tainted = true
 
 	v.lines = nil
+	v.viewLines = nil
+	v.readOffset = 0
 	v.clearRunes()
 }
 

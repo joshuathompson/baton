@@ -37,11 +37,7 @@ func (p *PlaylistTable) renderHeader(v *gocui.View, maxX int) {
 	collaborativeHeader := utils.LeftPaddedString("COLLABORATIVE", columnWidths["collaborative"], 2)
 	totalHeader := utils.LeftPaddedString("TOTAL", columnWidths["total"], 2)
 
-	loadedLength := maxX / 3
-	loadedHeader := utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d playlists", len(p.playlists.Items), p.playlists.Total), loadedLength, 2)
-	titleLength := maxX - loadedLength
-
-	fmt.Fprintf(v, "\u001b[1m%s %s[0m\n\n", utils.LeftPaddedString("PLAYLISTS", titleLength, 2), loadedHeader)
+	fmt.Fprintf(v, "\u001b[1m%s[0m\n", utils.LeftPaddedString("PLAYLISTS", maxX, 2))
 	fmt.Fprintf(v, "\u001b[1m%s %s %s %s\u001b[0m\n", nameHeader, ownerHeader, totalHeader, collaborativeHeader)
 }
 
@@ -56,6 +52,10 @@ func (p *PlaylistTable) render(v *gocui.View, maxX int) {
 
 		fmt.Fprintf(v, "\n%s %s %s %s", name, owner, total, collaborative)
 	}
+}
+
+func (p *PlaylistTable) renderFooter(v *gocui.View, maxX int) {
+	fmt.Fprintf(v, "\u001b[1m%s\u001b[0m\n", utils.LeftPaddedString(fmt.Sprintf("Showing %d of %d playlists", len(p.playlists.Items), p.playlists.Total), maxX, 2))
 }
 
 func (p *PlaylistTable) getTableLength() int {
