@@ -9,10 +9,12 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// AlbumTable implements the Table interface for "Simple" Album objects as defined by the Spotify Web API
 type AlbumTable struct {
 	albums *api.SimpleAlbumsPaged
 }
 
+// NewAlbumTable creates a new instance of AlbumTable
 func NewAlbumTable(albumsPaged *api.SimpleAlbumsPaged) *AlbumTable {
 	return &AlbumTable{
 		albums: albumsPaged,

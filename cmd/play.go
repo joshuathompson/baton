@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func playUri(cmd *cobra.Command, args []string) {
+func playURI(cmd *cobra.Command, args []string) {
 	if len(args) > 0 {
 		playerOptions.ContextURI = args[0]
 		err := api.StartPlayback(&playerOptions)
@@ -167,7 +167,7 @@ var playCmd = &cobra.Command{
 	Short: "Play top result for specified artist, album, playlist, track, or uri",
 	Long:  `Play top result for specified artist, album, playlist, track, or uri`,
 	Args:  cobra.MaximumNArgs(1),
-	Run:   playUri,
+	Run:   playURI,
 }
 
 var playArtistCmd = &cobra.Command{

@@ -2,6 +2,7 @@ package api
 
 import "net/http"
 
+// The SimpleAlbum struct describes a "Simple" Album object as defined by the Spotify Web API
 type SimpleAlbum struct {
 	AlbumType        string            `json:"album"`
 	Artists          []SimpleArtist    `json:"artists"`
@@ -15,6 +16,7 @@ type SimpleAlbum struct {
 	URI              string            `json:"uri"`
 }
 
+// The SimpleAlbumsPaged struct is a slice of SimpleAlbum objects wrapped in a Spotify paging object
 type SimpleAlbumsPaged struct {
 	Href     string        `json:"href"`
 	Items    []SimpleAlbum `json:"items"`
@@ -25,6 +27,7 @@ type SimpleAlbumsPaged struct {
 	Total    int           `json:"total"`
 }
 
+// GetTracksForAlbum returns a list of "Simple" Track objects in a paging object for the given album
 func GetTracksForAlbum(albumID string) (pt SimpleTracksPaged, err error) {
 	t := getAccessToken()
 
@@ -36,6 +39,7 @@ func GetTracksForAlbum(albumID string) (pt SimpleTracksPaged, err error) {
 	return pt, err
 }
 
+// GetNextTracksForAlbum takes in the Next field from the paging objects returned from GetTracksForAlbum and allows you to move forward through the tracks
 func GetNextTracksForAlbum(url string) (pt SimpleTracksPaged, err error) {
 	t := getAccessToken()
 

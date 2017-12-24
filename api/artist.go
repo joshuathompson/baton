@@ -2,6 +2,7 @@ package api
 
 import "net/http"
 
+// The FullArtist struct describes a "Full" Artist object as defined by the Spotify Web API
 type FullArtist struct {
 	ExternalUrls map[string]string `json:"external_urls"`
 	Followers    *Followers        `json:"followers"`
@@ -15,6 +16,7 @@ type FullArtist struct {
 	URI          string            `json:"uri"`
 }
 
+// The SimpleArtist struct describes a "Simple" Artist object as defined by the Spotify Web API
 type SimpleArtist struct {
 	ExternalUrls map[string]string `json:"external_urls"`
 	Href         string            `json:"href"`
@@ -24,6 +26,7 @@ type SimpleArtist struct {
 	URI          string            `json:"uri"`
 }
 
+// The FullArtistsPaged struct is a slice of FullArtist objects wrapped in a Spotify paging object
 type FullArtistsPaged struct {
 	Href     string       `json:"href"`
 	Items    []FullArtist `json:"items"`
@@ -34,6 +37,7 @@ type FullArtistsPaged struct {
 	Total    int          `json:"total"`
 }
 
+// GetAlbumsForArtist returns a list of "Simple" Album objects in a paging object for the given artist
 func GetAlbumsForArtist(artistID string) (pa SimpleAlbumsPaged, err error) {
 	t := getAccessToken()
 
@@ -45,6 +49,7 @@ func GetAlbumsForArtist(artistID string) (pa SimpleAlbumsPaged, err error) {
 	return pa, err
 }
 
+// GetNextAlbumsForArtist takes in the Next field from the paging objects returned from GetAlbumsForArtist and allows you to move forward through the albums
 func GetNextAlbumsForArtist(url string) (pa SimpleAlbumsPaged, err error) {
 	t := getAccessToken()
 

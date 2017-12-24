@@ -2,6 +2,7 @@ package api
 
 import "time"
 
+// The TrackLink struct describes a TrackLink object as defined by the Spotify Web API
 type TrackLink struct {
 	ExternalUrls map[string]string `json:"external_urls"`
 	Href         string            `json:"href"`
@@ -10,6 +11,7 @@ type TrackLink struct {
 	URI          string            `json:"uri"`
 }
 
+// The FullTrack struct describes a "Full" Track object as defined by the Spotify Web API
 type FullTrack struct {
 	Album            *SimpleAlbum      `json:"album"`
 	Artists          []SimpleArtist    `json:"artists"`
@@ -31,6 +33,7 @@ type FullTrack struct {
 	URI              string            `json:"uri"`
 }
 
+// The SimpleTrack struct describes a "Simple" Track object as defined by the Spotify Web API
 type SimpleTrack struct {
 	Artists          []SimpleArtist    `json:"artists"`
 	AvailableMarkets []string          `json:"available_markets"`
@@ -49,6 +52,7 @@ type SimpleTrack struct {
 	URI              string            `json:"uri"`
 }
 
+// The PlaylistTrack struct describes a Playlist Track object as defined by the Spotify Web API
 type PlaylistTrack struct {
 	AddedAt *time.Time `json:"added_at"`
 	AddedBy *User      `json:"added_by"`
@@ -56,6 +60,7 @@ type PlaylistTrack struct {
 	Track   FullTrack  `json:"track"`
 }
 
+// The SimpleTracksPaged struct is a slice of SimpleTrack objects wrapped in a Spotify paging object
 type SimpleTracksPaged struct {
 	Href     string        `json:"href"`
 	Items    []SimpleTrack `json:"items"`
@@ -66,6 +71,7 @@ type SimpleTracksPaged struct {
 	Total    int           `json:"total"`
 }
 
+// The FullTracksPaged struct is a slice of FullTrack objects wrapped in a Spotify paging object
 type FullTracksPaged struct {
 	Href     string      `json:"href"`
 	Items    []FullTrack `json:"items"`
@@ -76,6 +82,7 @@ type FullTracksPaged struct {
 	Total    int         `json:"total"`
 }
 
+// The PlaylistTracksPaged struct is a slice of PlaylistTrack objects wrapped in a Spotify paging object
 type PlaylistTracksPaged struct {
 	Href     string          `json:"href"`
 	Items    []PlaylistTrack `json:"items"`

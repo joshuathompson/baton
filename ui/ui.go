@@ -6,6 +6,7 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// The Table interface describes the logic necessary to draw, update, and respond to a list of table items with subtables
 type Table interface {
 	render(v *gocui.View, maxX int)
 	renderHeader(v *gocui.View, maxX int)
@@ -206,6 +207,8 @@ func keybindings(g *gocui.Gui) error {
 }
 
 
+// Run starts the TUI for a struct that implements the table interface.  The prebuilt tables are for artists, albums, tracks, and playlists.
+// Run will block indefinitely until returning an error or nil
 func Run(initialTable Table) error {
 	currentTable = initialTable
 	defer printNowPlaying()

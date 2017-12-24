@@ -13,20 +13,17 @@ const (
 	apiURLBase = "api.spotify.com/v1/"
 )
 
+// The Image struct describes an album, artist, playlist, etc image
 type Image struct {
 	Height int    `json:"height"`
 	URL    string `json:"url"`
 	Width  int    `json:"width"`
 }
 
+// The Followers struct describes the followers for an artist, playlist, etc
 type Followers struct {
 	Href  string `json:"href"`
 	Total int    `json:"total"`
-}
-
-type Cursor struct {
-	After  string `json:"after"`
-	Before string `json:"before"`
 }
 
 var client *http.Client

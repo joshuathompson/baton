@@ -10,10 +10,12 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// ArtistTable implements the Table interface for "Full" Artist objects as defined by the Spotify Web API
 type ArtistTable struct {
 	artists *api.FullArtistsPaged
 }
 
+// NewArtistTable creates a new instance of ArtistTable
 func NewArtistTable(artistsPaged *api.FullArtistsPaged) *ArtistTable {
 	return &ArtistTable{
 		artists: artistsPaged,

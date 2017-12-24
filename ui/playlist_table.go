@@ -9,10 +9,12 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// PlaylistTable implements the Table interface for "Simple" Playlist objects as defined by the Spotify Web API
 type PlaylistTable struct {
 	playlists *api.SimplePlaylistsPaged
 }
 
+// NewPlaylistTable creates a new instance of PlaylistTable
 func NewPlaylistTable(playlistsPaged *api.SimplePlaylistsPaged) *PlaylistTable {
 	return &PlaylistTable{
 		playlists: playlistsPaged,

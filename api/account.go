@@ -14,6 +14,7 @@ const (
 	accountsURLBase = "accounts.spotify.com/"
 )
 
+// The Tokens struct describes a combination of the items returned from Spotify's API Authorization process as well as Baton-created fields to store in your config directory 
 type Tokens struct {
 	AccessToken    string        `json:"access_token"`
 	TokenType      string        `json:"token_type"`
@@ -25,6 +26,7 @@ type Tokens struct {
 	Scope          string        `json:"scope"`
 }
 
+// GetAuthorizationURL builds an Authorization URL for the user to navigate to from their ClientID
 func GetAuthorizationURL(id string) string {
 	v := url.Values{}
 	v.Set("client_id", id)
@@ -36,6 +38,7 @@ func GetAuthorizationURL(id string) string {
 	return r.URL.String()
 }
 
+// AuthorizeWithCode completes the Authorization process and stores your refresh and current access tokens in the config directory for Baton
 func AuthorizeWithCode(id, secret, code string) {
 	var t Tokens
 	v := url.Values{}

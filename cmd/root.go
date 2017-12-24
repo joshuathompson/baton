@@ -22,6 +22,7 @@ var rootCmd = &cobra.Command{
 	Long:  `A CLI tool to orchestrate your Spotify`,
 }
 
+// Execute is the entrypoint for the CLI called from the main function
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

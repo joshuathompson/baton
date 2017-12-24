@@ -10,11 +10,13 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// TrackTable implements the Table interface for "Full" Track objects as defined by the Spotify Web API
 type TrackTable struct {
 	tracks *api.FullTracksPaged
 	title  string
 }
 
+// NewTrackTable creates a new instance of TrackTable
 func NewTrackTable(fullTracksPaged *api.FullTracksPaged) *TrackTable {
 	return &TrackTable{
 		tracks: fullTracksPaged,

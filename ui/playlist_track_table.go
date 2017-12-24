@@ -10,11 +10,14 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// PlaylistTrackTable implements the Table interface for Playlist Track objects as defined by the Spotify Web API
 type PlaylistTrackTable struct {
 	data     *api.PlaylistTracksPaged
 	playlist *api.SimplePlaylist
 }
 
+// NewPlaylistTrackTable creates a new instance of PlaylistTrackTable
+// Used as a subtable of playlist because the API gives back Playlist Track objects when querying by Playlist ID
 func NewPlaylistTrackTable(playlistTracksPaged *api.PlaylistTracksPaged, playlist *api.SimplePlaylist) *PlaylistTrackTable {
 	return &PlaylistTrackTable{
 		data:     playlistTracksPaged,

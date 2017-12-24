@@ -10,11 +10,14 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+// SimpleTrackTable implements the Table interface for "Simple" Track objects as defined by the Spotify Web API
 type SimpleTrackTable struct {
 	tracks *api.SimpleTracksPaged
 	album  *api.SimpleAlbum
 }
 
+// NewSimpleTrackTable creates a new instance of SimpleTrackTable
+// Used as a subtable of album because the API gives back "Simple" Track objects when querying by Album ID
 func NewSimpleTrackTable(simpleTracksPaged *api.SimpleTracksPaged, album *api.SimpleAlbum) *SimpleTrackTable {
 	return &SimpleTrackTable{
 		album:  album,

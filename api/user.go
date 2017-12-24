@@ -1,5 +1,6 @@
 package api
 
+// The User struct describes a User object as defined by the Spotify Web API
 type User struct {
 	DisplayName  string            `json:"display_name"`
 	ExternalUrls map[string]string `json:"external_urls"`
