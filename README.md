@@ -1,7 +1,7 @@
 # Baton
 > Baton is a CLI tool to manage Spotify playback and includes a TUI for searches  
 
-[![asciicast](https://asciinema.org/a/7hX4zOpYojSVWm2XlemWPSYeJ.png)](https://asciinema.org/a/7hX4zOpYojSVWm2XlemWPSYeJ)
+[![asciicast](https://asciinema.org/a/7hX4zOpYojSVWm2XlemWPSYeJ.png)](https://asciinema.org/a/RgR4iT9wz2J3bjCx0p7Wj9Rnn)
 
 ## NOTE:  You can't change songs, volume, etc without Spotify premium due to a limit on their web API
 
