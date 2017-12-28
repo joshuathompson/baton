@@ -20,7 +20,14 @@ func reportStatus(cmd *cobra.Command, args []string) {
 	if ctx.Item != nil {
 		track := ctx.Item.Name
 		album := ctx.Item.Album.Name
+		var playingState string
 		var artistNames []string
+
+		if ctx.IsPlaying {
+			playingState = "Playing"
+		} else {
+			playingState = "Paused"
+		}
 
 		for _, artist := range ctx.Item.Artists {
 			artistNames = append(artistNames, artist.Name)
@@ -33,6 +40,7 @@ func reportStatus(cmd *cobra.Command, args []string) {
 		fmt.Printf("Artist: %s\n", strings.Join(artistNames, ", "))
 		fmt.Printf("Album: %s\n", album)
 		fmt.Printf("Time Elapsed: %s - %s\n", progress, duration)
+		fmt.Printf("State: %s\n", playingState)
 	} else {
 		fmt.Printf("Couldn't find information about the current status\n")
 	}
