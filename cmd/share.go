@@ -18,6 +18,7 @@ func getURIAndURL(cmd *cobra.Command, args []string) {
 	if ctx.Item != nil {
 		fmt.Printf("URI: %s\n", ctx.Item.URI)
 		fmt.Printf("URL: %s\n", ctx.Item.Href)
+		fmt.Printf("Share URL: %s\n", ctx.Item.ExternalUrls["spotify"])
 	} else {
 		fmt.Printf("There doesn't appear to be a track playing currently\n")
 	}
