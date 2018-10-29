@@ -123,3 +123,12 @@ func (t *PlaylistTrackTable) newTableFromSelection(selectedIndex int) (Table, er
 
 	return nil, api.StartPlayback(&playerOptions)
 }
+
+func (t *PlaylistTrackTable) handleSaveKey(selectedIndex int) error {
+	track := t.data.Items[selectedIndex]
+	err := api.SaveTrack(track.Track.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

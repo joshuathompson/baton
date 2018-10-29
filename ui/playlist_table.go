@@ -105,3 +105,7 @@ func (p *PlaylistTable) newTableFromSelection(selectedIndex int) (Table, error) 
 
 	return NewPlaylistTrackTable(&tracksPaged, &playlist), nil
 }
+
+func (p *PlaylistTable) handleSaveKey(selectedIndex int) error {
+	return nil
+}

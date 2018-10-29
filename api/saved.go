@@ -35,3 +35,43 @@ func GetNextSavedTracks(url string) (sr *SavedTracksPaged, err error) {
 
 	return sr, err
 }
+
+// SaveTrack takes in a TrackID and saves it to the users library
+func SaveTrack(trackID string) (err error) {
+	v, err := query.Values(nil)
+
+	if err != nil {
+		return err
+	}
+
+	v.Add("ids", trackID)
+
+	t := getAccessToken()
+
+	r := buildRequest("PUT", apiURLBase+"me/tracks", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, nil)
+
+	return err
+}
+
+// RemoveSavedTrack takes in a TrackID and removes it from the users library
+func RemoveSavedTrack(trackID string) (err error) {
+	v, err := query.Values(nil)
+
+	if err != nil {
+		return err
+	}
+
+	v.Add("ids", trackID)
+
+	t := getAccessToken()
+
+	r := buildRequest("DELETE", apiURLBase+"me/tracks", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, nil)
+
+	return err
+}

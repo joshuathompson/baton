@@ -142,3 +142,12 @@ func (t *TrackTable) newTableFromSelection(selectedIndex int) (Table, error) {
 	}
 	return nil, api.StartPlayback(&playerOptions)
 }
+
+func (t *TrackTable) handleSaveKey(selectedIndex int) error {
+	track := t.tracks.Items[selectedIndex]
+	err := api.SaveTrack(track.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

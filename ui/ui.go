@@ -15,6 +15,7 @@ type Table interface {
 	loadNextRecords() error
 	playSelected(selectedIndex int) (string, error)
 	newTableFromSelection(selectedIndex int) (Table, error)
+	handleSaveKey(selectedIndex int) error
 }
 
 var (
@@ -58,6 +59,12 @@ func cursorUp(g *gocui.Gui, v *gocui.View) error {
 func playSelected(g *gocui.Gui, v *gocui.View) error {
 	y := getSelectedY(v)
 	_, err := currentTable.playSelected(y)
+	return err
+}
+
+func saveSelected(g *gocui.Gui, v *gocui.View) error {
+	y := getSelectedY(v)
+	err := currentTable.handleSaveKey(y)
 	return err
 }
 
@@ -198,6 +205,7 @@ func keybindings(g *gocui.Gui) error {
 	err = g.SetKeybinding("table", 'p', gocui.ModNone, playSelected)
 	err = g.SetKeybinding("table", gocui.KeyEnter, gocui.ModNone, playSelectedAndExit)
 	err = g.SetKeybinding("table", 'm', gocui.ModNone, loadNextRecords)
+	err = g.SetKeybinding("table", 's', gocui.ModNone, saveSelected)
 
 	if err != nil {
 		return err
@@ -205,7 +213,6 @@ func keybindings(g *gocui.Gui) error {
 
 	return nil
 }
-
 
 // Run starts the TUI for a struct that implements the table interface.  The prebuilt tables are for artists, albums, tracks, and playlists.
 // Run will block indefinitely until returning an error or nil

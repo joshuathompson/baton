@@ -162,3 +162,15 @@ func (t *SavedTrackTable) getArrayOfSavedSongURIs(currentIndex int) (songURIs []
 	}
 	return songURIs
 }
+
+func (t *SavedTrackTable) handleSaveKey(currentIndex int) error {
+	track := t.tracks.Items[currentIndex]
+	err := api.RemoveSavedTrack(track.Track.ID)
+	if err != nil {
+		return err
+	}
+
+	t.tracks.Items = append(t.tracks.Items[:currentIndex], t.tracks.Items[currentIndex+1:]...)
+
+	return nil
+}
