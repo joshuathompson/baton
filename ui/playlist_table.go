@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/joshuathompson/baton/api"
 	"github.com/joshuathompson/baton/utils"
@@ -66,19 +67,36 @@ func (p *PlaylistTable) getTableLength() int {
 
 func (p *PlaylistTable) loadNextRecords() error {
 	if p.playlists.Next != "" {
-		res, err := api.GetNextSearchResults(p.playlists.Next)
+		if strings.Contains(p.playlists.Next, "api.spotify.com/v1/search") {
+			res, err := api.GetNextSearchResults(p.playlists.Next)
 
-		if err != nil {
-			return err
+			if err != nil {
+				return err
+			}
+
+			nextPlaylists := res.Playlists
+
+			p.playlists.Href = nextPlaylists.Href
+			p.playlists.Offset = nextPlaylists.Offset
+			p.playlists.Next = nextPlaylists.Next
+			p.playlists.Previous = nextPlaylists.Previous
+			p.playlists.Items = append(p.playlists.Items, nextPlaylists.Items...)
+		} else {
+			res, err := api.GetNextMyPlaylists(p.playlists.Next)
+
+			if err != nil {
+				return err
+			}
+
+			nextPlaylists := res
+
+			p.playlists.Href = nextPlaylists.Href
+			p.playlists.Offset = nextPlaylists.Offset
+			p.playlists.Next = nextPlaylists.Next
+			p.playlists.Previous = nextPlaylists.Previous
+			p.playlists.Items = append(p.playlists.Items, nextPlaylists.Items...)
 		}
 
-		nextPlaylists := res.Playlists
-
-		p.playlists.Href = nextPlaylists.Href
-		p.playlists.Offset = nextPlaylists.Offset
-		p.playlists.Next = nextPlaylists.Next
-		p.playlists.Previous = nextPlaylists.Previous
-		p.playlists.Items = append(p.playlists.Items, nextPlaylists.Items...)
 	}
 
 	return nil

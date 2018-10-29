@@ -174,7 +174,7 @@ func StartPlayback(opts *PlayerOptions) error {
 	j, err := json.Marshal(opts)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("fatal", err)
 	}
 
 	b := bytes.NewBuffer(j)
@@ -185,6 +185,7 @@ func StartPlayback(opts *PlayerOptions) error {
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, nil)
+	// TODO: Handle error here
 
 	return err
 }

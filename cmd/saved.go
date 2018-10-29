@@ -13,7 +13,7 @@ func browseSavedTracks(cmd *cobra.Command, args []string) {
 	res, err := api.GetSavedTracks(&searchOptions)
 
 	if err != nil {
-		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		fmt.Printf("Couldn't get your saved tracks. Have you authenticated with the 'auth' command?\n")
 		fmt.Println("err", res, err)
 		return
 	}
@@ -31,7 +31,7 @@ func browseSavedAlbums(cmd *cobra.Command, args []string) {
 	res, err := api.GetSavedAlbums(&searchOptions)
 
 	if err != nil {
-		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		fmt.Printf("Couldn't get your saved albums. Have you authenticated with the 'auth' command?\n")
 		fmt.Println("err", res, err)
 		return
 	}
@@ -58,10 +58,11 @@ var savedCmd = &cobra.Command{
 }
 
 var savedTracksCmd = &cobra.Command{
-	Use:   `tracks`,
-	Short: "Browse saved tracks",
-	Long:  `Browse saved tracks`,
-	Run:   browseSavedTracks,
+	Use:     `tracks`,
+	Aliases: []string{"songs"},
+	Short:   "Browse saved tracks",
+	Long:    `Browse saved tracks`,
+	Run:     browseSavedTracks,
 }
 
 var savedAlbumsCmd = &cobra.Command{
