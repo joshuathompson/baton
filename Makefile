@@ -30,3 +30,7 @@ endif
 
 .PHONY: build
 build: windows linux darwin
+
+.PHONY: run
+run:
+	$(GORUN) main.go

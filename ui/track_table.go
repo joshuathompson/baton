@@ -48,6 +48,7 @@ func (t *TrackTable) renderHeader(v *gocui.View, maxX int) {
 }
 
 func (t *TrackTable) render(v *gocui.View, maxX int) {
+
 	columnWidths := t.getColumnWidths(maxX)
 
 	for _, track := range t.tracks.Items {
