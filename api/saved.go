@@ -75,3 +75,73 @@ func RemoveSavedTrack(trackID string) (err error) {
 
 	return err
 }
+
+// GetSavedAlbums returns a list of all the albums the user has saved
+func GetSavedAlbums(opts *SearchOptions) (result *SavedAlbumsPaged, err error) {
+	v, err := query.Values(opts)
+
+	if err != nil {
+		return result, err
+	}
+
+	t := getAccessToken()
+
+	r := buildRequest("GET", apiURLBase+"me/albums", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &result)
+
+	return result, err
+}
+
+// GetNextSavedAlbums takes in the Next fields from the paging objects returned from Saved Albums and moves forward through the results
+func GetNextSavedAlbums(url string) (sr *SavedAlbumsPaged, err error) {
+	t := getAccessToken()
+
+	r, err := http.NewRequest("GET", url, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, &sr)
+
+	return sr, err
+}
+
+// SaveAlbum takes in an AlbumID and saves it to the users library
+func SaveAlbum(AlbumID string) (err error) {
+	v, err := query.Values(nil)
+
+	if err != nil {
+		return err
+	}
+
+	v.Add("ids", AlbumID)
+
+	t := getAccessToken()
+
+	r := buildRequest("PUT", apiURLBase+"me/albums", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, nil)
+
+	return err
+}
+
+// RemoveSavedAlbum takes in an AlbumID and removes it from the users library
+func RemoveSavedAlbum(AlbumID string) (err error) {
+	v, err := query.Values(nil)
+
+	if err != nil {
+		return err
+	}
+
+	v.Add("ids", AlbumID)
+
+	t := getAccessToken()
+
+	r := buildRequest("DELETE", apiURLBase+"me/albums", v, nil)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, nil)
+
+	return err
+}

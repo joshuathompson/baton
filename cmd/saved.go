@@ -27,9 +27,28 @@ func browseSavedTracks(cmd *cobra.Command, args []string) {
 	}
 }
 
+func browseSavedAlbums(cmd *cobra.Command, args []string) {
+	res, err := api.GetSavedAlbums(&searchOptions)
+
+	if err != nil {
+		fmt.Printf("Couldn't properly search Spotify. Have you authenticated with the 'auth' command?\n")
+		fmt.Println("err", res, err)
+		return
+	}
+
+	at := ui.NewSavedAlbumTable(res)
+
+	err = ui.Run(at)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func init() {
-	rootCmd.AddCommand(savedCmd)
+	meCmd.AddCommand(savedCmd)
 	savedCmd.AddCommand(savedTracksCmd)
+	savedCmd.AddCommand(savedAlbumsCmd)
 }
 
 var savedCmd = &cobra.Command{
@@ -43,4 +62,11 @@ var savedTracksCmd = &cobra.Command{
 	Short: "Browse saved tracks",
 	Long:  `Browse saved tracks`,
 	Run:   browseSavedTracks,
+}
+
+var savedAlbumsCmd = &cobra.Command{
+	Use:   `albums`,
+	Short: "Browse saved Albums",
+	Long:  `Browse saved Albums`,
+	Run:   browseSavedAlbums,
 }
