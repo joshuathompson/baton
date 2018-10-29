@@ -186,7 +186,7 @@ func layout(g *gocui.Gui) error {
 		v.Frame = false
 		v.BgColor = gocui.ColorBlue
 
-		fmt.Fprintf(v, "[q] Quit [h] Go back [j] Down [k] Up [l] Go forward [m] Load Additional [p] Play [enter] Play and Exit")
+		fmt.Fprintf(v, "[q] Quit [h] Go back [j] Down [k] Up [l] Go forward [m] Load Additional [s] Save selected song/album to library [p] Play [enter] Play and Exit")
 	}
 
 	return nil
