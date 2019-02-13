@@ -21,10 +21,10 @@ os = $(word 1, $@)
 # Make for all the platforms
 .PHONY: $(PLATFORMS)
 ifeq ($(OS),Windows_NT)
-$(PLATFORMS):
+$(PLATFORMS): # If host is windows
 	set GOOS=$(os)&& set GOARCH=amd64&& $(GOBUILD) -o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) main.go
 else
-$(PLATFORMS):
+$(PLATFORMS): # else it's Linux/MacOS
 	GOOS=$(os) GOARCH=amd64&& $(GOBUILD) -o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) main.go
 endif
 
@@ -34,3 +34,5 @@ build: windows linux darwin
 .PHONY: run
 run:
 	$(GORUN) main.go
+
+.DEFAULT_GOAL := build
