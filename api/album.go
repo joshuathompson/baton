@@ -1,6 +1,9 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
 // The SimpleAlbum struct describes a "Simple" Album object as defined by the Spotify Web API
 type SimpleAlbum struct {
@@ -16,6 +19,12 @@ type SimpleAlbum struct {
 	URI              string            `json:"uri"`
 }
 
+// The SavedAlbum struct describes a Saved Track object as defined by the Spotify Web API
+type SavedAlbum struct {
+	AddedAt *time.Time  `json:"added_at"`
+	Album   SimpleAlbum `json:"album"`
+}
+
 // The SimpleAlbumsPaged struct is a slice of SimpleAlbum objects wrapped in a Spotify paging object
 type SimpleAlbumsPaged struct {
 	Href     string        `json:"href"`
@@ -25,6 +34,17 @@ type SimpleAlbumsPaged struct {
 	Offset   int           `json:"offset"`
 	Previous string        `json:"previous"`
 	Total    int           `json:"total"`
+}
+
+// The SavedAlbumsPaged struct is a slice of SavedAlbum objects wrapped in a Spotify paging object
+type SavedAlbumsPaged struct {
+	Href     string       `json:"href"`
+	Items    []SavedAlbum `json:"items"`
+	Limit    int          `json:"limit"`
+	Next     string       `json:"next"`
+	Offset   int          `json:"offset"`
+	Previous string       `json:"previous"`
+	Total    int          `json:"total"`
 }
 
 // GetTracksForAlbum returns a list of "Simple" Track objects in a paging object for the given album

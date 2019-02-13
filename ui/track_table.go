@@ -48,6 +48,7 @@ func (t *TrackTable) renderHeader(v *gocui.View, maxX int) {
 }
 
 func (t *TrackTable) render(v *gocui.View, maxX int) {
+
 	columnWidths := t.getColumnWidths(maxX)
 
 	for _, track := range t.tracks.Items {
@@ -140,4 +141,13 @@ func (t *TrackTable) newTableFromSelection(selectedIndex int) (Table, error) {
 		ContextURI: track.URI,
 	}
 	return nil, api.StartPlayback(&playerOptions)
+}
+
+func (t *TrackTable) handleSaveKey(selectedIndex int) error {
+	track := t.tracks.Items[selectedIndex]
+	err := api.SaveTrack(track.ID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

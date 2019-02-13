@@ -32,7 +32,7 @@ func GetAuthorizationURL(id string) string {
 	v.Set("client_id", id)
 	v.Set("response_type", "code")
 	v.Set("redirect_uri", "http://localhost:15298/callback")
-	v.Set("scope", "playlist-read-private user-top-read user-library-read user-read-currently-playing user-read-recently-played user-modify-playback-state user-read-playback-state user-follow-read playlist-read-collaborative")
+	v.Set("scope", "playlist-read-private user-top-read user-library-read user-library-modify user-read-currently-playing user-read-recently-played user-modify-playback-state user-read-playback-state user-follow-read playlist-read-collaborative")
 
 	r := buildRequest("GET", accountsURLBase+"authorize", v, nil)
 	return r.URL.String()

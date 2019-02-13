@@ -60,6 +60,12 @@ type PlaylistTrack struct {
 	Track   FullTrack  `json:"track"`
 }
 
+// The SavedTrack struct describes a Saved Track object as defined by the Spotify Web API
+type SavedTrack struct {
+	AddedAt *time.Time `json:"added_at"`
+	Track   FullTrack  `json:"track"`
+}
+
 // The SimpleTracksPaged struct is a slice of SimpleTrack objects wrapped in a Spotify paging object
 type SimpleTracksPaged struct {
 	Href     string        `json:"href"`
@@ -91,4 +97,15 @@ type PlaylistTracksPaged struct {
 	Offset   int             `json:"offset"`
 	Previous string          `json:"previous"`
 	Total    int             `json:"total"`
+}
+
+// The SavedTracksPaged struct is a slice of SavedTrack objects wrapped in a Spotify paging object
+type SavedTracksPaged struct {
+	Href     string       `json:"href"`
+	Items    []SavedTrack `json:"items"`
+	Limit    int          `json:"limit"`
+	Next     string       `json:"next"`
+	Offset   int          `json:"offset"`
+	Previous string       `json:"previous"`
+	Total    int          `json:"total"`
 }

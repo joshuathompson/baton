@@ -122,3 +122,13 @@ func (a *AlbumTable) newTableFromSelection(selectedIndex int) (Table, error) {
 
 	return NewSimpleTrackTable(&tracksPaged, &album), nil
 }
+
+func (a *AlbumTable) handleSaveKey(selectedIndex int) error {
+	album := a.albums.Items[selectedIndex]
+
+	err := api.SaveAlbum(album.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

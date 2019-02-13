@@ -10,7 +10,7 @@ import (
 )
 
 // The PlayerContext struct describes the current context of what is playing on the active device.  ex. The context could be an "album" which can then be derived from the URI
-// The can be used to determine that "One More Time by Daft Punk" that the user is listening to is actually in a user created playlist and that the context is NOT the album versiom, for instance 
+// The can be used to determine that "One More Time by Daft Punk" that the user is listening to is actually in a user created playlist and that the context is NOT the album versiom, for instance
 type PlayerContext struct {
 	Type         string            `json:"type"`
 	Href         string            `json:"href"`
@@ -45,12 +45,11 @@ type PlayerOptions struct {
 }
 
 // The PlayerOffsetOptions describes how to set the offset within a context when controlling playback
-// For example, you can use Position to specify track number within an album OR you can use the URI to point to that same track directly  
+// For example, you can use Position to specify track number within an album OR you can use the URI to point to that same track directly
 type PlayerOffsetOptions struct {
 	Position int    `json:"position,omitempty" url:"position,omitempty"`
 	URI      string `json:"uri,omitempty" url:"uri,omitempty"`
 }
-
 
 // GetDevices returns a list of available playback devices
 func GetDevices() (d []Device, err error) {
@@ -64,7 +63,6 @@ func GetDevices() (d []Device, err error) {
 
 	return ds.Devices, err
 }
-
 
 // GetPlayerState returns the active device, whether the player is paused, progress of current song, and other playback information
 func GetPlayerState(opts *Options) (ps PlayerState, err error) {
@@ -166,7 +164,7 @@ func SeekToPosition(pos int, opts *Options) error {
 
 // StartPlayback can resume playback or change playback to a new URI/context
 func StartPlayback(opts *PlayerOptions) error {
-	v, err := query.Values(opts)
+	v, err := query.Values(nil) // Don't pass anything here because if we do and we start playback with a large list URIs they will be put in the query string and give us an error
 
 	if err != nil {
 		return err
@@ -176,7 +174,7 @@ func StartPlayback(opts *PlayerOptions) error {
 	j, err := json.Marshal(opts)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("fatal", err)
 	}
 
 	b := bytes.NewBuffer(j)
@@ -187,6 +185,7 @@ func StartPlayback(opts *PlayerOptions) error {
 	r.Header.Add("Authorization", "Bearer "+t)
 
 	err = makeRequest(r, nil)
+	// TODO: Handle error here
 
 	return err
 }
