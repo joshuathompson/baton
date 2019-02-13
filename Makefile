@@ -25,7 +25,7 @@ $(PLATFORMS):
 	set GOOS=$(os)&& set GOARCH=amd64&& $(GOBUILD) -o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) main.go
 else
 $(PLATFORMS):
-	GOOS=$(os) GOARCH=amd64&& $(GOBUILD)-o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) naub.go
+	GOOS=$(os) GOARCH=amd64&& $(GOBUILD) -o $(BINARY_OUTPUT)-$(VERSION)-$(os)-amd64$(if $(filter $(os),windows),.exe,) main.go
 endif
 
 .PHONY: build
