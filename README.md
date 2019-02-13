@@ -54,6 +54,10 @@ This process will generate a long-lasting refresh token and ideally will never h
 | <kbd>q</kbd>     | quit                                                 |
 | <kbd>s</kbd>     | save or unsave the currently selected track or album |
 
+## Building
+
+To build the program, simply run `make` or `make build`, this will build for all 3 platforms (note: to do this on windows you'll need [Make for windows](http://gnuwin32.sourceforge.net/packages/make.htm)). To build for one specific platform run `make <platform>` where platform is either "windows", "darwin" (for MacOS) or "linux". You can also run from source by running `make run`.
+
 ## License
 
 MIT
