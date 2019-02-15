@@ -44,6 +44,11 @@ type PlayerOptions struct {
 	Offset     *PlayerOffsetOptions `json:"offset,omitempty" url:"offset,omitempty"`
 }
 
+type TransferOptions struct {
+	DeviceIDs	[]string	`json:"device_ids" url:"device_ids"`
+	Play bool `json:"play,omitempty" url:"play,omitempty"`
+}
+
 // The PlayerOffsetOptions describes how to set the offset within a context when controlling playback
 // For example, you can use Position to specify track number within an album OR you can use the URI to point to that same track directly
 type PlayerOffsetOptions struct {
@@ -186,6 +191,26 @@ func StartPlayback(opts *PlayerOptions) error {
 
 	err = makeRequest(r, nil)
 	// TODO: Handle error here
+
+	return err
+}
+
+func TransferPlayback(opts *TransferOptions) error {
+
+	j, err := json.Marshal(opts)
+
+	if err != nil {
+		log.Fatal("fatal", err)
+	}
+
+	b := bytes.NewBuffer(j)
+
+	t := getAccessToken()
+
+	r := buildRequest("PUT", apiURLBase+"me/player", nil, b)
+	r.Header.Add("Authorization", "Bearer "+t)
+
+	err = makeRequest(r, nil)
 
 	return err
 }
