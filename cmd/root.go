@@ -41,8 +41,10 @@ func initConfig() {
 	cfgFile := filepath.Join(cfgDir, "baton.json")
 
 	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
-		err := ioutil.WriteFile(cfgFile, []byte("{}"), 0666)
-		if err != nil {
+		if err := os.MkdirAll(cfgDir, os.ModePerm); err != nil {
+			log.Fatal(err)
+		}
+		if err := ioutil.WriteFile(cfgFile, []byte("{}"), 0666); err != nil {
 			log.Fatal(err)
 		}
 	}
