@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/joshuathompson/baton/api"
-	"github.com/joshuathompson/baton/utils"
+	"baton/api"
+	"baton/utils"
 	"github.com/spf13/cobra"
 )
 

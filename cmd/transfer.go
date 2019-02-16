@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/joshuathompson/baton/api"
+	"baton/api"
 	"github.com/spf13/cobra"
 )
 

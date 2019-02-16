@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/joshuathompson/baton/api"
+	"baton/api"
 	"github.com/spf13/cobra"
 )
 
