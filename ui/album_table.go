@@ -6,6 +6,7 @@ import (
 
 	"baton/api"
 	"baton/utils"
+
 	"github.com/jroimartin/gocui"
 )
 
