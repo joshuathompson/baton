@@ -31,7 +31,8 @@ func Start(pipeFile, logFile string) (int, error) {
 	return cmd.Process.Pid, nil
 }
 
-func Run(pipeFile, logFile string) {
+// Run runs the daemon.
+func Run(logFile, outFile, pipeFile string) {
 	if err := os.MkdirAll(filepath.Dir(logFile), os.ModePerm); err != nil {
 		log.Fatal(err)
 	}
@@ -40,6 +41,11 @@ func Run(pipeFile, logFile string) {
 		log.Fatal(err)
 	}
 	log.SetOutput(w)
+
+	w, err = os.OpenFile(outFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	defer os.Remove(pipeFile)
 	for {
@@ -63,4 +69,14 @@ func Run(pipeFile, logFile string) {
 	}
 
 	log.Println("Exiting")
+}
+
+// writeOutput writes a string to a file with a delimiter for easier parsing.
+func writeOutput(w io.Writer, s string) error {
+	s = "-----\n" + s
+	if !strings.HasSuffix(s, "\n") {
+		s += "\n"
+	}
+	_, err := w.Write([]byte(s))
+	return err
 }

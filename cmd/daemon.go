@@ -15,34 +15,29 @@ import (
 
 func runDaemon(cmd *cobra.Command, args []string) {
 	if isDaemon {
-		daemon.Run(pipeFile, logFile)
+		daemon.Run(logFile, outFile, pipeFile)
 	} else {
-		startDaemon()
+		pid, err := daemon.Start(pipeFile, logFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Daemon running with PID=%d, pipe=%s\n", pid, pipeFile)
 	}
-}
-
-func startDaemon() {
-	pid, err := daemon.Start(pipeFile, logFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Daemon running with PID %d, pipe %s\n", pid, pipeFile)
 }
 
 func init() {
 	dataDir := appdir.New("baton").UserData()
-	defaultLog := filepath.Join(dataDir, "daemon.log")
-	defaultPipe := filepath.Join(dataDir, "baton.pipe")
-
 	rootCmd.AddCommand(daemonCmd)
-	daemonCmd.PersistentFlags().StringVar(&logFile, "log-file", defaultLog, "Daemon log file")
-	daemonCmd.PersistentFlags().StringVar(&pipeFile, "pipe-file", defaultPipe, "Daemon pipe file")
+	daemonCmd.PersistentFlags().StringVar(&logFile, "log-file", filepath.Join(dataDir, "daemon.log"), "Daemon log file")
+	daemonCmd.PersistentFlags().StringVar(&outFile, "out-file", filepath.Join(dataDir, "stdout.txt"), "Daemon output file")
+	daemonCmd.PersistentFlags().StringVar(&pipeFile, "pipe-file", filepath.Join(dataDir, "baton.pipe"), "Daemon pipe file")
 	daemonCmd.PersistentFlags().BoolVar(&isDaemon, "x", false, "Don't use this flag")
 }
 
 var (
 	isDaemon = false
 	logFile  string
+	outFile  string
 	pipeFile string
 )
 
