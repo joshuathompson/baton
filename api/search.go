@@ -21,7 +21,6 @@ type SearchOptions struct {
 	Offset int    `json:"offset,omitempty" url:"offset,omitempty"`
 }
 
-
 // Search queries the Spotify API based on the given query and options and returns the results wrapped in paging objects
 func Search(q, types string, opts *SearchOptions) (sr SearchResults, err error) {
 	v, err := query.Values(opts)

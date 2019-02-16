@@ -14,7 +14,7 @@ const (
 	accountsURLBase = "accounts.spotify.com/"
 )
 
-// The Tokens struct describes a combination of the items returned from Spotify's API Authorization process as well as Baton-created fields to store in your config directory 
+// The Tokens struct describes a combination of the items returned from Spotify's API Authorization process as well as Baton-created fields to store in your config directory
 type Tokens struct {
 	AccessToken    string        `json:"access_token"`
 	TokenType      string        `json:"token_type"`

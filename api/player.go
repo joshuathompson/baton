@@ -45,8 +45,8 @@ type PlayerOptions struct {
 }
 
 type TransferOptions struct {
-	DeviceIDs	[]string	`json:"device_ids" url:"device_ids"`
-	Play bool `json:"play,omitempty" url:"play,omitempty"`
+	DeviceIDs []string `json:"device_ids" url:"device_ids"`
+	Play      bool     `json:"play,omitempty" url:"play,omitempty"`
 }
 
 // The PlayerOffsetOptions describes how to set the offset within a context when controlling playback

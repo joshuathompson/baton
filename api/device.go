@@ -10,7 +10,7 @@ type Device struct {
 	VolumePercent int    `json:"volume_percent"`
 }
 
-// The Devices struct is needed because the /devices endpoint returns the devices wrapped in a root object 
+// The Devices struct is needed because the /devices endpoint returns the devices wrapped in a root object
 type Devices struct {
 	Devices []Device `json:"devices"`
 }
