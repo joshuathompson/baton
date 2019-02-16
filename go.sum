@@ -1,5 +1,7 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/ProtonMail/go-appdir v1.0.0 h1:PZXQ0HkveuEugga3LeDycxWtybrXQfKR0ThxURd6ojw=
+github.com/ProtonMail/go-appdir v1.0.0/go.mod h1:3d8Y9F5mbEUjrYbcJ3rcDxcWbqbttF+011nVZmdRdzc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -22,8 +24,6 @@ github.com/magiconair/properties v1.7.4 h1:UVo0TkHGd4lQSN1dVDzs9URCIgReuSIcCXpAV
 github.com/magiconair/properties v1.7.4/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/mattn/go-runewidth v0.0.2 h1:UnlwIPBGaTZfPQ6T1IGzPI0EkYAQmT9fAEJ/poFC63o=
 github.com/mattn/go-runewidth v0.0.2/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
-github.com/mitchellh/go-homedir v0.0.0-20161203194507-b8bc1bf76747 h1:eQox4Rh4ewJF+mqYPxCkmBAirRnPaHEB26UkNuPyjlk=
-github.com/mitchellh/go-homedir v0.0.0-20161203194507-b8bc1bf76747/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/mitchellh/mapstructure v0.0.0-20171017171808-06020f85339e h1:PtGHLB3CX3TFPcksODQMxncoeQKWwCgTg0bJ40VLJP4=
 github.com/mitchellh/mapstructure v0.0.0-20171017171808-06020f85339e/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/nsf/termbox-go v0.0.0-20171104162316-aa4a75b1c20a h1:USZ2AkITyiH9LzgIrssF9S5mRQhbRvvTkAFlJHiWmfg=

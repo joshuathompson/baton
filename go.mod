@@ -2,6 +2,7 @@ module baton
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/ProtonMail/go-appdir v1.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.2 // indirect
 	github.com/google/go-querystring v0.0.0-20170111101155-53e6ce116135
@@ -11,7 +12,6 @@ require (
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/magiconair/properties v1.7.4 // indirect
 	github.com/mattn/go-runewidth v0.0.2 // indirect
-	github.com/mitchellh/go-homedir v0.0.0-20161203194507-b8bc1bf76747
 	github.com/mitchellh/mapstructure v0.0.0-20171017171808-06020f85339e // indirect
 	github.com/nsf/termbox-go v0.0.0-20171104162316-aa4a75b1c20a // indirect
 	github.com/pelletier/go-toml v1.0.1 // indirect

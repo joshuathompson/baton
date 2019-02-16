@@ -1,13 +1,14 @@
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"baton/api"
-	homedir "github.com/mitchellh/go-homedir"
+
+	appdir "github.com/ProtonMail/go-appdir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -34,15 +35,10 @@ func init() {
 }
 
 func initConfig() {
-	home, err := homedir.Dir()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	viper.AddConfigPath(home + "/.config")
+	cfgDir := appdir.New("baton").UserConfig()
+	viper.AddConfigPath(cfgDir)
 	viper.SetConfigName("baton")
-	cfgFile := home + "/.config/baton.json"
+	cfgFile := filepath.Join(cfgDir, "baton.json")
 
 	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
 		err := ioutil.WriteFile(cfgFile, []byte("{}"), 0666)
@@ -51,9 +47,7 @@ func initConfig() {
 		}
 	}
 
-	err = viper.ReadInConfig()
-
-	if err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal(err)
 	}
 }
