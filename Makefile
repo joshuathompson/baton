@@ -8,7 +8,7 @@ GORUN=$(GOCMD) run
 
 # App info
 BINARY_NAME := baton
-VERSION := 0.1.6
+VERSION := 0.1.7
 
 # Folders
 OUTPUT_FOLDER := build
