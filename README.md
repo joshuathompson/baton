@@ -1,6 +1,6 @@
 # Baton
 
-> Baton is a CLI tool to manage Spotify playback and includes a CUI for searches
+> Baton is a CLI tool to manage Spotify playback and includes a TUI for searches
 
 <!-- [![asciicast](https://asciinema.org/a/RgR4iT9wz2J3bjCx0p7Wj9Rnn.png)](https://asciinema.org/a/RgR4iT9wz2J3bjCx0p7Wj9Rnn) -->
 ![](https://raw.githubusercontent.com/joshuathompson/baton/master/example.gif)
@@ -33,7 +33,7 @@ This process will generate a long-lasting refresh token and ideally will never h
 | prev     | skip to previous track                                                                |
 | repeat   | get/set repeat mode                                                                   |
 | replay   | replay current track from the beginning                                               |
-| search   | search for specified artist, album, playlist, or track and select via interactive CUI |
+| search   | search for specified artist, album, playlist, or track and select via interactive TUI |
 | seek     | skip to a specific time (seconds) of the current track                                |
 | share    | get uri and url for current track                                                     |
 | shuffle  | toggle shuffle on/off                                                                 |
@@ -41,7 +41,7 @@ This process will generate a long-lasting refresh token and ideally will never h
 | transfer | transfer playback to another device by id                                             |
 | vol      | get/set volume                                                                        |
 
-### CUI Keybinds
+### TUI Keybinds
 
 | Keybind          | Description                                          |
 | ---------------- | ---------------------------------------------------- |
