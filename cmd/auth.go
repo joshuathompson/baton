@@ -21,7 +21,7 @@ func getClientCredentials() (id, secret string) {
 		"3. Create a new app\n" +
 		"4. Click the newly created app\n" +
 		"5. Click 'Edit Settings'\n" +
-		"6. Add 'http://localhost:15298/callback' as a redirect URI, don't forget to save\n" +
+		"6. Add 'http://127.0.0.1:15298/callback' as a redirect URI, don't forget to save\n" +
 		"7. Copy the Client Id and Client Secret\n" +
 		"8. Input the items as the CLI asks for them\n")
 
